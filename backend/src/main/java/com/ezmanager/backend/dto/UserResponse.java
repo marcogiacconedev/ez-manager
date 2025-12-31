@@ -11,7 +11,7 @@ public class UserResponse {
     private String userEmail;
     private String role;
 
-    public final UserResponse(User user) {
+    public UserResponse(User user) {
         this.id = user.getId();
         this.userName = user.getName();
         this.userEmail = user.getEmail();

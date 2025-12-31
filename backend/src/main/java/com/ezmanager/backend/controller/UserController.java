@@ -21,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
     
-    @GetMapping("/{id}") 
+    @GetMapping("users/{id}") 
     public ResponseEntity<UserResponse> getUser(@PathVariable UUID id) {
         UserResponse user = userService.getUserById(id);
 

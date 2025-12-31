@@ -26,11 +26,11 @@ public class User {
     private String pass_hash;
 
     @Column(nullable = false)
-    private final String role = "USER";
+    private final String user_role = "USER";
 
     public UUID getId() { return this.id; }
     public String getName() { return this. user_name; }
     public String getEmail() { return this.user_email; }
-    public String getRole() { return this.role; }
+    public String getRole() { return this.user_role; }
 
 }
