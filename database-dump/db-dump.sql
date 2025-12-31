@@ -1,8 +1,8 @@
 -- USER
-CREATE TABLE public."User" (
+CREATE TABLE public.users (
 	id uuid NOT NULL,
-	email varchar NOT NULL,
-	name varchar NOT NULL,
-	"password" varchar NOT NULL,
-	CONSTRAINT user_pk PRIMARY KEY (id)
+	user_email varchar NOT NULL,
+	user_name varchar NOT NULL,
+	pass_has varchar NOT NULL,
+	user_role varchar DEFAULT USER NOT NULL
 );
