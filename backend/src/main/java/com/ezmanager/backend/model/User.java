@@ -26,6 +26,11 @@ public class User {
     private String pass_hash;
 
     @Column(nullable = false)
-    private String role = "USER";
+    private final String role = "USER";
+
+    public UUID getId() { return this.id; }
+    public String getName() { return this. user_name; }
+    public String getEmail() { return this.user_email; }
+    public String getRole() { return this.role; }
 
 }

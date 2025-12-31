@@ -1,5 +1,11 @@
 package com.ezmanager.backend.repository;
 
-public class UserRepository {
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ezmanager.backend.model.User;
+
+public interface UserRepository extends JpaRepository<User, UUID>{
     
 }
