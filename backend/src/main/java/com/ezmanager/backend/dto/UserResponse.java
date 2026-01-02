@@ -17,5 +17,22 @@ public class UserResponse {
         this.userEmail = user.getEmail();
         this.role = user.getRole();
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
     
 }
