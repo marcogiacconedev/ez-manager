@@ -16,30 +16,32 @@ public class Alert {
     @GeneratedValue
     private UUID id;
 
-    private UUID userId;
     @Column(
         nullable = false,
         name = "user_id"
     )
+    private UUID userId;
 
-    private UUID parentEntityId;
     @Column(
         nullable = false,
         name = "parent_entity_id"
     )
+    private UUID parentEntityId;
 
-    private String alertDate;
     @Column(
-        nullable = false,
         name = "alert_date"
     )
+    private String alertDate;
 
-    private String alertMessage;
     @Column(
         name = "alert_message"
     )
+    private String alertMessage;
+    
+    @Column(
+        name = "created_at"
+    )
     private String createdAt;
-
 
     //getters
     public UUID getId() {
