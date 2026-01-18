@@ -9,9 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Notes")
-public class Note {
-    
+@Table(name = "Links")
+public class Link {
     @Id
     @GeneratedValue
     private UUID id;
@@ -20,7 +19,7 @@ public class Note {
         nullable = false,
         name = "user_id"
     )
-    private String userId;
+    private UUID userId;
 
     @Column(
         nullable = false,
@@ -30,9 +29,9 @@ public class Note {
 
     @Column(
         nullable = false,
-        name = "text"
+        name = "link"
     )
-    private String text;
+    private String link;
 
     @Column(
         nullable = false,
@@ -48,6 +47,13 @@ public class Note {
     public void setId(UUID id) {
         this.id = id;
     }
+    
+    public UUID getUserId() {
+        return userId;
+    }
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
     public String getName() {
         return name;
@@ -56,11 +62,11 @@ public class Note {
         this.name = name;
     }
 
-    public String getText() {
-        return text;
+    public String getLink() {
+        return link;
     }
-    public void setText(String text) {
-        this.text = text;
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getCreatedAt() {
@@ -68,12 +74,5 @@ public class Note {
     }
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 }

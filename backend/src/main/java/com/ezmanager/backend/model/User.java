@@ -40,9 +40,37 @@ public class User {
     )
     private final String userRole = "USER";
 
-    public UUID getId() { return this.id; }
-    public String getName() { return this.userName; }
-    public String getEmail() { return this.userEmail; }
-    public String getRole() { return this.userRole; }
+    //getters and
 
+    public UUID getId() {
+        return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getPassHash() {
+        return passHash;
+    }
+    public void setPassHash(String passHash) {
+        this.passHash = passHash;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
 }

@@ -9,8 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Notes")
-public class Note {
+@Table(name = "Expenses")
+public class Expense {
     
     @Id
     @GeneratedValue
@@ -20,7 +20,7 @@ public class Note {
         nullable = false,
         name = "user_id"
     )
-    private String userId;
+    private UUID userId;
 
     @Column(
         nullable = false,
@@ -30,16 +30,20 @@ public class Note {
 
     @Column(
         nullable = false,
-        name = "text"
+        name = "category"
     )
-    private String text;
+    private String category;
+
+    @Column(
+        name = "description"
+    )
+    private String description;
 
     @Column(
         nullable = false,
         name = "created_at"
     )
     private String createdAt;
-
 
     //getters and setters
     public UUID getId() {
@@ -49,6 +53,13 @@ public class Note {
         this.id = id;
     }
 
+    public UUID getUserId() {
+        return userId;
+    }
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
     public String getName() {
         return name;
     }
@@ -56,11 +67,18 @@ public class Note {
         this.name = name;
     }
 
-    public String getText() {
-        return text;
+    public String getDescription() {
+        return description;
     }
-    public void setText(String text) {
-        this.text = text;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getCreatedAt() {
@@ -68,12 +86,5 @@ public class Note {
     }
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 }

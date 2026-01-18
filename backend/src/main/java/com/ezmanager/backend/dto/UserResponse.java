@@ -13,9 +13,9 @@ public class UserResponse {
 
     public UserResponse(User user) {
         this.id = user.getId();
-        this.userName = user.getName();
-        this.userEmail = user.getEmail();
-        this.role = user.getRole();
+        this.userName = user.getUserName();
+        this.userEmail = user.getUserEmail();
+        this.role = user.getUserRole();
     }
 
     public UUID getId() {

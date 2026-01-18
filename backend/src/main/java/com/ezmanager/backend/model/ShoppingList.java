@@ -9,9 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Notes")
-public class Note {
-    
+@Table(name = "Shopping_Lists")
+public class ShoppingList {
     @Id
     @GeneratedValue
     private UUID id;
@@ -20,7 +19,7 @@ public class Note {
         nullable = false,
         name = "user_id"
     )
-    private String userId;
+    private UUID userId;
 
     @Column(
         nullable = false,
@@ -29,10 +28,15 @@ public class Note {
     private String name;
 
     @Column(
-        nullable = false,
-        name = "text"
+        name = "notes"
     )
-    private String text;
+    private String notes;
+
+    @Column(
+        nullable = false,
+        name = "status"
+    )
+    private String status;
 
     @Column(
         nullable = false,
@@ -40,6 +44,10 @@ public class Note {
     )
     private String createdAt;
 
+    @Column(
+        name = "completed_at"
+    )
+    private String completedAt;
 
     //getters and setters
     public UUID getId() {
@@ -47,6 +55,13 @@ public class Note {
     }
     public void setId(UUID id) {
         this.id = id;
+    }
+    
+    public UUID getUserId() {
+        return userId;
+    }
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -56,11 +71,18 @@ public class Note {
         this.name = name;
     }
 
-    public String getText() {
-        return text;
+    public String getNotes() {
+        return notes;
     }
-    public void setText(String text) {
-        this.text = text;
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCreatedAt() {
@@ -70,10 +92,10 @@ public class Note {
         this.createdAt = createdAt;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getCompletedAt() {
+        return completedAt;
     }
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setCompletedAt(String completedAt) {
+        this.completedAt = completedAt;
     }
 }
