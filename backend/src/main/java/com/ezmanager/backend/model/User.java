@@ -11,19 +11,21 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="Users")
 public class User {
-    
+
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column(
         nullable = false,
+        unique = true,
         name = "user_name"
     )
     private String userName;
 
     @Column(
         nullable = false,
+        unique = true,
         name = "user_email"
     )
     private String userEmail;
@@ -38,9 +40,9 @@ public class User {
         nullable = false,
         name = "user_role"
     )
-    private final String userRole = "USER";
+    private String userRole = "USER";
 
-    //getters and
+    //getters and setters
 
     public UUID getId() {
         return id;
@@ -72,5 +74,8 @@ public class User {
 
     public String getUserRole() {
         return userRole;
+    }
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
     }
 }

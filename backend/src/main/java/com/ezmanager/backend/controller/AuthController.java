@@ -8,24 +8,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ezmanager.backend.dto.LoginRequest;
 import com.ezmanager.backend.dto.LoginResponse;
+import com.ezmanager.backend.dto.SignupRequest;
+import com.ezmanager.backend.dto.UserResponse;
 import com.ezmanager.backend.service.AuthService;
 
 @RestController
-@RequestMapping
+@RequestMapping("auth")
 public class AuthController {
+
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
+    @PostMapping("signup")
+    public ResponseEntity<UserResponse> signup(@RequestBody SignupRequest request) {
+        return ResponseEntity.ok(authService.signup(request));
+    }
+
     @PostMapping("login")
-    public ResponseEntity<LoginResponse> getLoginToken(@RequestBody LoginRequest loginRequest) {
-        String username = loginRequest.getUsername();
-        String password = loginRequest.getPassword();
-
-        LoginResponse loginResponse = new LoginResponse(username + password); 
-
-        return ResponseEntity.ok(loginResponse);   
-    } 
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
 }
