@@ -1,5 +1,6 @@
 package com.ezmanager.backend.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -37,7 +38,7 @@ public class Link {
         nullable = false,
         name = "created_at"
     )
-    private String createdAt;
+    private LocalDateTime createdAt;
 
 
     //getters and setters
@@ -47,7 +48,7 @@ public class Link {
     public void setId(UUID id) {
         this.id = id;
     }
-    
+
     public UUID getUserId() {
         return userId;
     }
@@ -69,10 +70,10 @@ public class Link {
         this.link = link;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

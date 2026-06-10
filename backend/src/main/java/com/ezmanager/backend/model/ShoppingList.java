@@ -1,5 +1,6 @@
 package com.ezmanager.backend.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -42,12 +43,12 @@ public class ShoppingList {
         nullable = false,
         name = "created_at"
     )
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @Column(
         name = "completed_at"
     )
-    private String completedAt;
+    private LocalDateTime completedAt;
 
     //getters and setters
     public UUID getId() {
@@ -56,7 +57,7 @@ public class ShoppingList {
     public void setId(UUID id) {
         this.id = id;
     }
-    
+
     public UUID getUserId() {
         return userId;
     }
@@ -85,17 +86,17 @@ public class ShoppingList {
         this.status = status;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getCompletedAt() {
+    public LocalDateTime getCompletedAt() {
         return completedAt;
     }
-    public void setCompletedAt(String completedAt) {
+    public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
 }

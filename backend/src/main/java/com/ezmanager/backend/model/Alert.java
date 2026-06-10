@@ -1,5 +1,6 @@
 package com.ezmanager.backend.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -11,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Alerts")
 public class Alert {
-    
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -31,17 +32,17 @@ public class Alert {
     @Column(
         name = "alert_date"
     )
-    private String alertDate;
+    private LocalDateTime alertDate;
 
     @Column(
         name = "alert_message"
     )
     private String alertMessage;
-    
+
     @Column(
         name = "created_at"
     )
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     //getters and setters
     public UUID getId() {
@@ -65,10 +66,10 @@ public class Alert {
         this.parentEntityId = parentEntityId;
     }
 
-    public String getAlertDate() {
+    public LocalDateTime getAlertDate() {
         return alertDate;
     }
-    public void setAlertDate(String alertDate) {
+    public void setAlertDate(LocalDateTime alertDate) {
         this.alertDate = alertDate;
     }
 
@@ -79,11 +80,10 @@ public class Alert {
         this.alertMessage = alertMessage;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    
 }

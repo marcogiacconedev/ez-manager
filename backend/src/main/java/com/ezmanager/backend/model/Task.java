@@ -1,5 +1,6 @@
 package com.ezmanager.backend.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -35,7 +36,7 @@ public class Task {
     @Column(
         name = "date"
     )
-    private String date;
+    private LocalDateTime date;
 
     @Column(
         nullable = false,
@@ -47,13 +48,13 @@ public class Task {
         nullable = false,
         name = "created_at"
     )
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @Column(
-        nullable = false,
+        nullable = true,
         name = "completed_at"
     )
-    private String completedAt;
+    private LocalDateTime completedAt;
 
     @Column(
         name = "priority"
@@ -96,10 +97,10 @@ public class Task {
         this.description = description;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -110,17 +111,17 @@ public class Task {
         this.wholeDay = wholeDay;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getCompletedAt() {
+    public LocalDateTime getCompletedAt() {
         return completedAt;
     }
-    public void setCompletedAt(String completedAt) {
+    public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
 

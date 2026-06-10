@@ -1,5 +1,6 @@
 package com.ezmanager.backend.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -11,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Notes")
 public class Note {
-    
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -20,7 +21,7 @@ public class Note {
         nullable = false,
         name = "user_id"
     )
-    private String userId;
+    private UUID userId;
 
     @Column(
         nullable = false,
@@ -38,7 +39,7 @@ public class Note {
         nullable = false,
         name = "created_at"
     )
-    private String createdAt;
+    private LocalDateTime createdAt;
 
 
     //getters and setters
@@ -63,17 +64,17 @@ public class Note {
         this.text = text;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 }
