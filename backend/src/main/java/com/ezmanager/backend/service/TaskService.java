@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ezmanager.backend.dto.CreateTaskRequest;
 import com.ezmanager.backend.dto.TaskResponse;
+import com.ezmanager.backend.dto.UpdateTaskRequest;
 import com.ezmanager.backend.model.Task;
 import com.ezmanager.backend.repository.TaskRepository;
 
@@ -40,6 +41,33 @@ public class TaskService {
         task.setPriority(dto.getPriority());
         task.setSubtaskOf(dto.getSubtaskOf());
         task.setCreatedAt(LocalDateTime.now());
+
+        return new TaskResponse(taskRepository.save(task));
+    }
+
+    public void deleteTask(UUID taskId, UUID userId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task non trovata"));
+
+        if (!task.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato");
+        }
+
+        taskRepository.deleteById(taskId);
+    }
+
+    public TaskResponse updateTask(UUID taskId, UpdateTaskRequest dto, UUID userId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task non trovata"));
+
+        if (!task.getUserId().equals(userId)) {
+            new RuntimeException("Non autorizzato");
+        }
+
+        task.setName(dto.getName());
+        task.setDescription(dto.getDescription());
+        task.setDate(dto.getDate());
+        task.setWholeDay(dto.getWholeDay());
+        task.setPriority(dto.getPriority());
+        task.setSubtaskOf(dto.getSubtaskOf());
 
         return new TaskResponse(taskRepository.save(task));
     }
