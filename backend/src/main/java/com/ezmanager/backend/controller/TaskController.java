@@ -21,7 +21,6 @@ import com.ezmanager.backend.dto.TaskResponse;
 import com.ezmanager.backend.dto.UpdateTaskRequest;
 import com.ezmanager.backend.service.TaskService;
 
-import jakarta.persistence.PostUpdate;
 import jakarta.validation.Valid;
 
 @RestController
