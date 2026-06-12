@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ezmanager.backend.dto.CreateShoppingListRequest;
 import com.ezmanager.backend.dto.ShoppingListResponse;
+import com.ezmanager.backend.dto.UpdateShoppingListRequest;
 import com.ezmanager.backend.model.ShoppingList;
 import com.ezmanager.backend.repository.ShoppingListRepository;
 
@@ -37,6 +38,29 @@ public class ShoppingListService {
         shoppingList.setName(dto.getName());
         shoppingList.setNotes(dto.getNotes());
         shoppingList.setStatus(dto.getStatus());
+
+        return new ShoppingListResponse(shoppingListRepository.save(shoppingList));
+    }
+
+    public void deleteShoppingList(UUID shoppingListId, UUID userId) {
+        ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId).orElseThrow(() -> new RuntimeException("Lista non trovata"));
+        if (!shoppingList.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato");
+        }
+        shoppingListRepository.deleteById(shoppingListId);
+    }
+
+    public ShoppingListResponse updateShoppingList(UUID taskId, UpdateShoppingListRequest dto, UUID userId) {
+        ShoppingList shoppingList = shoppingListRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task non trovata!"));
+        
+        if (!shoppingList.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato");
+        }
+
+        shoppingList.setName(dto.getName());
+        shoppingList.setNotes(dto.getNotes());
+        shoppingList.setStatus(dto.getStatus());
+        shoppingList.setCompletedAt(dto.getCompletedAt());
 
         return new ShoppingListResponse(shoppingListRepository.save(shoppingList));
     }
