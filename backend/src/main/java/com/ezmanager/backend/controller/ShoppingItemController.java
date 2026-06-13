@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ezmanager.backend.dto.CreateShoppingItemRequest;
 import com.ezmanager.backend.dto.ShoppingItemResponse;
+import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.service.ShoppingItemService;
 
 import jakarta.validation.Valid;
@@ -58,5 +60,14 @@ public class ShoppingItemController {
     ) {
         shoppingItemService.deleteShoppingItem(shoppingItemId, UUID.fromString(userId));
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{shoppingItemId}")
+    public ResponseEntity<ShoppingItemResponse> updateShoppingItem(
+        @Valid @RequestBody UpdateShoppingItemRequest dto,
+        @PathVariable UUID shoppingItemId,
+        @AuthenticationPrincipal String userId
+    ) {
+        return ResponseEntity.ok(shoppingItemService.updateShoppingItem(dto, shoppingItemId, UUID.fromString(userId)));        
     }
 }

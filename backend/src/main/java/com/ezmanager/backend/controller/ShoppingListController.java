@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ezmanager.backend.dto.CreateShoppingListRequest;
 import com.ezmanager.backend.dto.ShoppingListResponse;
 import com.ezmanager.backend.dto.UpdateShoppingListRequest;
-import com.ezmanager.backend.model.ShoppingList;
 import com.ezmanager.backend.service.ShoppingListService;
 
 import jakarta.validation.Valid;
@@ -67,13 +66,6 @@ public class ShoppingListController {
         @Valid @RequestBody UpdateShoppingListRequest dto,
         @AuthenticationPrincipal String userId
     ) {
-        ShoppingList shoppingList = new ShoppingList();
-        shoppingList.setName(dto.getName());
-        shoppingList.setNotes(dto.getNotes());
-        shoppingList.setStatus(dto.getStatus());
-        shoppingList.setCreatedAt(dto.getCreatedAt());
-        shoppingList.setCompletedAt(dto.getCompletedAt());
-
         return ResponseEntity.ok(shoppingListService.updateShoppingList(shoppingListId, dto, UUID.fromString(userId)));
     }
 }
