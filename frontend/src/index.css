@@ -1,23 +1,29 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitcount:wght@100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
+:root {
+  /* Colors */
+  --text: #f1f1f1;
+  --text-h: #ffffff;
+  --bg: #0a0a0a;
+  --border: #2a2a2e;
+  --code-bg: #141414;
+  --accent: #56fe30;
+  --accent-bg: rgba(170, 59, 255, 0.12);
+  --accent-border: rgba(170, 59, 255, 0.4);
+  --social-bg: rgba(255, 255, 255, 0.05);
+  --shadow:
+    rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.2) 0 4px 6px -2px;
+
+  /* Typography */
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: "Bitcount";
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: dark;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -28,4 +34,62 @@
   @media (max-width: 1024px) {
     font-size: 16px;
   }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Space Mono", monospace;
+}
+
+.header {
+  font-family: "Bitcount", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
+  margin-left: 2rem;
+  padding: 2rem 0;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  margin: 1rem 1rem;
+}
+
+.login-input {
+  width: 80%;
+  padding: 1rem 2rem;
+  margin: 1rem;
+  border-radius: 15px;
+  border: 0px solid white;
+}
+
+.submit-button {
+  margin-bottom: 1rem;
+  padding: 0.7rem 2rem;
+  border-radius: 15px;
+  background-color: var(--accent);
+  color: var(--code-bg);
+  border: 0px solid white;
+}
+
+.error-message-container {
+  background-color: rgba(255, 0, 0, 0.1);
+  margin: 1rem 1rem;
+  padding: 1rem 1rem;
+  border-radius: 10px;
+  border: 1px solid red;
 }
