@@ -1,11 +1,14 @@
 import { useState } from "react";
 import useTaskApi from "../hooks/useTaskApi";
 import Calendar from "../components/Calendar";
+import { useNavigate } from "react-router-dom";
 
 const TaskPage = (): React.ReactNode => {
     const [page, setPage] = useState<number>(0);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const resultsPerPage = 3;
     const { tasks, totalPages } = useTaskApi(page, resultsPerPage);
+    const navigate = useNavigate();
 
     const changePage = (value: number) : void => {
         if (page + value < 0 || page + value >= totalPages) {
@@ -13,6 +16,14 @@ const TaskPage = (): React.ReactNode => {
         }
         setPage(page + value);
     }
+
+    const onSelectDate = (date: Date | null): void => {
+        if (date) {
+            setSelectedDate(date);
+        }
+        console.log(selectedDate);
+    }
+
     return (
         <>
             <div className="header-container">
@@ -20,11 +31,10 @@ const TaskPage = (): React.ReactNode => {
                 <h3 className="header-subtitle">Oggi: {new Date().toDateString()}</h3>
             </div>
             <div className="card-container">
-                <h2 className="header-2">Task</h2>
                 <div className="card">
                     {
                         tasks.map((task) => (
-                        <div key={task.id} className="task-display-row">
+                        <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
                             <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                             <p className="task-display-item task-name">▻ {task.name}</p>
                             <p className="task-display-item task-description">▻ {task.description}</p>
@@ -39,7 +49,9 @@ const TaskPage = (): React.ReactNode => {
                     </div>
                 </div>
                 <div className="card">
-                    <Calendar></Calendar>
+                    <Calendar
+                    onSelectDate={onSelectDate}
+                    ></Calendar>
                 </div>
             </div>
         </>

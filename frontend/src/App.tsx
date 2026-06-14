@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage'
 import TaskPage from './pages/TaskPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import HomePage from './pages/HomePage'
+import TaskForm from './pages/TaskForm'
 
 function App() {
 
@@ -22,6 +23,11 @@ function App() {
             <TaskPage />
           </ProtectedRoute>
         } />
+        <Route path='/tasks/create/:taskId' element={
+          <ProtectedRoute>
+            <TaskForm />
+          </ProtectedRoute>
+        }/>
         <Route path="/shopping" element={
           <ProtectedRoute>
             <ShoppingListPage />

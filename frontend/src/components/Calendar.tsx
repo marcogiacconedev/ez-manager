@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-// ─── Tipi ────────────────────────────────────────────────────────────────────
+// types
 
 type CalendarProps = {
   onSelectDate?: (date: Date) => void;
@@ -17,7 +17,7 @@ type SelectedDay = {
   year: number;
 } | null;
 
-// ─── Costanti ────────────────────────────────────────────────────────────────
+// constants
 
 const MONTHS: string[] = [
   "Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
@@ -26,7 +26,7 @@ const MONTHS: string[] = [
 
 const DAYS: string[] = ["Lu","Ma","Me","Gi","Ve","Sa","Do"];
 
-// ─── Helper ──────────────────────────────────────────────────────────────────
+// Helper
 
 function daysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
@@ -37,8 +37,6 @@ function firstDayOfMonth(year: number, month: number): number {
   const d = new Date(year, month, 1).getDay();
   return d === 0 ? 6 : d - 1;
 }
-
-// ─── Componente ──────────────────────────────────────────────────────────────
 
 export default function Calendar({ onSelectDate }: CalendarProps) {
   const today = new Date();
@@ -138,58 +136,3 @@ export default function Calendar({ onSelectDate }: CalendarProps) {
     </div>
   );
 }
-
-/* ---------- CSS (Calendar.module.css o file globale) ----------
-
-.calendar {
-  width: 320px;
-  font-family: sans-serif;
-}
-
-.calendar__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.calendar__header button {
-  background: none;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-}
-
-.calendar__grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
-
-.calendar__dow {
-  text-align: center;
-  font-size: 11px;
-  color: #888;
-  padding-bottom: 6px;
-}
-
-.calendar__day {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.calendar__day:hover     { background: #f0f0f0; }
-.calendar__day--other    { color: #bbb; cursor: default; }
-.calendar__day--today    { background: #e8f0fe; color: #1a73e8; font-weight: 600; }
-.calendar__day--selected { background: #1a73e8; color: #fff; font-weight: 600; }
-
-*/

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import type { Task } from "../pages/HomePage";
 
-export function useTaskApi(page: number, size: number) : {tasks: Task[], totalPages: number} {
+function useTaskApi(page: number, size: number) : {tasks: Task[], totalPages: number} {
   const [tasks, setTasks] = useState<Task[]>([])
   const [totalPages, setTotalPages] = useState<number>(0);
   const token = useAuthStore.getState().token
