@@ -38,7 +38,7 @@ const HomePage = (): React.ReactNode => {
                     {
                         tasks.map((task) => (
                         <div key={task.id} className="task-display-row">
-                            <p className="task-display-item task-date">- {new Date(task.date).toDateString()}</p>
+                            <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                             <p className="task-display-item task-name">▻ {task.name}</p>
                             <p className="task-display-item task-description">▻ {task.description}</p>
                             <hr className="task-line"/>
@@ -49,8 +49,8 @@ const HomePage = (): React.ReactNode => {
             </div>
             <div className="card-container">
                 <div className="card">
-                    <button className="home-button">Task</button>
-                    <button className="home-button">Shopping List</button>
+                    <button className="home-button" onClick={() => navigate('/tasks')}>Task</button>
+                    <button className="home-button" onClick={() => navigate('/shopping')}>Shopping List</button>
                     <button className="home-button">Metrics</button>
                 </div>
             </div>
