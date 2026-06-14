@@ -36,11 +36,9 @@ const LoginPage = (): React.ReactNode => {
 
 			setError("");
 			const data = await response.json();
-      		setAuth(data.username, data.token);
+			setAuth(username, data.token);
 
 			navigate('/home');
-			localStorage.setItem('ez-manager-jwt', data.token);
-
 		} catch (error) {
 			console.log(error);
 		}

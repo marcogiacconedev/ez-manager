@@ -1,7 +1,61 @@
+import { useAuthStore } from "../store/useAuthStore";
+import useTaskApi from "../hooks/useTaskApi";
+import { useNavigate } from "react-router-dom";
+
+export interface Task {
+    id: string,
+    name: string,
+    priority: number,
+    wholeDay: boolean,
+    subtaskOf: string | null,
+    description: string | null,
+    date: Date,
+    createdAt: Date,
+    completedAt: Date | null,
+}
+
 const HomePage = (): React.ReactNode => {
+    const username: string | null = useAuthStore.getState().username;
+    const logout = useAuthStore((state) => state.logout);
+    const navigate = useNavigate(); 
+    const { tasks } = useTaskApi(0, 5);
+    const handleLogout = (): void => {
+        logout();
+        navigate('/login');
+    }
+
     return (
         <>
-            <h1>Home page</h1>
+        <div>
+            <div className="header-container">
+                <h1 className="header">Hello,</h1>
+                <h3 className="header-subtitle">{username}</h3>
+                <h3 className="header-subtitle">Oggi: {new Date().toDateString()}</h3>
+            </div>
+            <div className="card-container">
+                <h2 className="header-2">Task</h2>
+                <div className="card">
+                    {
+                        tasks.map((task) => (
+                        <div key={task.id} className="task-display-row">
+                            <p className="task-display-item task-date">- {new Date(task.date).toDateString()}</p>
+                            <p className="task-display-item task-name">▻ {task.name}</p>
+                            <p className="task-display-item task-description">▻ {task.description}</p>
+                            <hr className="task-line"/>
+                        </div>
+                        ))
+                    }
+                </div>
+            </div>
+            <div className="card-container">
+                <div className="card">
+                    <button className="home-button">Task</button>
+                    <button className="home-button">Shopping List</button>
+                    <button className="home-button">Metrics</button>
+                </div>
+            </div>
+            <button onClick={handleLogout}>logout</button>
+        </div>
         </>
     )
 }
