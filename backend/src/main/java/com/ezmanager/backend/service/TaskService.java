@@ -29,6 +29,14 @@ public class TaskService {
         return taskRepository.findByUserId(userId, pageable).map(TaskResponse::new);
     }
 
+    public TaskResponse getTaskById(UUID taskId, UUID userId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task non trovata"));
+        if (!task.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato!");
+        }
+        return new TaskResponse(task);
+    }
+
     public TaskResponse createTask(CreateTaskRequest dto, UUID userId) {
         Task task = new Task();
 

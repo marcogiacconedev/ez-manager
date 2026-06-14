@@ -42,6 +42,14 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasksByUserId(UUID.fromString(userId), page, size));
     }
 
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> getTaskById(
+        @PathVariable UUID taskId,
+        @AuthenticationPrincipal String userId
+    ) {
+        return ResponseEntity.ok(taskService.getTaskById(taskId, UUID.fromString(userId)));
+    }
+
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(
             @Valid @RequestBody CreateTaskRequest dto,
