@@ -129,7 +129,16 @@
   border: 1px solid red;
 }
 
-.home-button, .submit-form-button {
+.home-button {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 2rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.submit-form-button {
   width: 80%;
   padding: 1rem 2rem;
   margin: 1rem;

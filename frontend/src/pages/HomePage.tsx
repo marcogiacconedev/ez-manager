@@ -1,6 +1,8 @@
 import { useAuthStore } from "../store/useAuthStore";
 import useTaskApi from "../hooks/useTaskApi";
 import { useNavigate } from "react-router-dom";
+import DropdownButton from "../components/DropdownButton";
+import { useState } from "react";
 
 export interface Task {
     id: string,
@@ -20,6 +22,8 @@ const HomePage = (): React.ReactNode => {
     const logout = useAuthStore((state) => state.logout);
     const navigate = useNavigate(); 
     const { tasks } = useTaskApi(0, 5);
+    const [isSectionsDropdownOpen, setIsSectionsDropdownOpen] = useState<boolean>(false);
+    const [isAlertsDropdownOpen, setisAlertsDropdownOpen] = useState<boolean>(false);
     const handleLogout = (): void => {
         logout();
         navigate('/login');
@@ -55,9 +59,27 @@ const HomePage = (): React.ReactNode => {
                 </div>
                 <div className="card-container">
                     <div className="card">
-                        <button className="home-button" onClick={() => navigate('/tasks')}>Task</button>
-                        <button className="home-button" onClick={() => navigate('/shopping')}>Shopping List</button>
-                        <button className="home-button">Metrics</button>
+                        <DropdownButton 
+                            header={'Sections'}
+                            onOpen={() => {setIsSectionsDropdownOpen(!isSectionsDropdownOpen)}}
+                            dropdownOpen={isSectionsDropdownOpen}
+                        ></DropdownButton>
+                        {isSectionsDropdownOpen && (
+                            <>
+                                <button className="home-button" onClick={() => navigate('/tasks')}>Task</button>
+                                <button className="home-button" onClick={() => navigate('/shopping')}>Shopping List</button>
+                                <button className="home-button">Metrics</button>                            
+                            </>
+                        )}
+                    </div>
+                </div>
+                <div className="card-container">
+                    <div className="card">
+                        <DropdownButton
+                            header={'Alerts'}
+                            onOpen={() => setisAlertsDropdownOpen(!isAlertsDropdownOpen)}
+                            dropdownOpen={isAlertsDropdownOpen}
+                        ></DropdownButton>
                     </div>
                 </div>
                 <button onClick={handleLogout}>logout</button>
