@@ -15,13 +15,12 @@ const LoginPage = (): React.ReactNode => {
 	const [password, setPassword] = useState<string>("");
 
 	const login = async (): Promise<void> => {
-		const baseUrl: string = import.meta.env.VITE_API_URL;
 		try {
 			const requestBody: LoginRequest = {
 				username: username,
 				password: password
 			} 
-			const response = await fetch(`${baseUrl}/auth/login`, {
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
 				method: "POST",
 				headers : {
 					"Content-Type" : "application/json"
@@ -30,7 +29,7 @@ const LoginPage = (): React.ReactNode => {
 			})
 
 			if (response.status !== 200) {
-				setError("Errore nel Login");
+				setError("Login was not successful!");
 				return
 			} 
 

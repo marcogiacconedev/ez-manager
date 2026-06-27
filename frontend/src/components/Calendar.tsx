@@ -4,6 +4,7 @@ import { useState } from "react";
 
 type CalendarProps = {
   onSelectDate?: (date: Date) => void;
+  selectedDate: Date | null
 };
 
 type MonthState = {
@@ -38,12 +39,16 @@ function firstDayOfMonth(year: number, month: number): number {
   return d === 0 ? 6 : d - 1;
 }
 
-export default function Calendar({ onSelectDate }: CalendarProps) {
-  const today = new Date();
-
+export default function Calendar({ onSelectDate, selectedDate }: CalendarProps) {
+  let date: Date;
+  if (selectedDate) {
+    date = new Date(selectedDate);
+  } else {
+    date = new Date();
+  }
   const [cur, setCur] = useState<MonthState>({
-    year: today.getFullYear(),
-    month: today.getMonth(),
+    year: date.getFullYear(),
+    month: date.getMonth(),
   });
 
   const [selected, setSelected] = useState<SelectedDay>(null);
@@ -70,26 +75,38 @@ export default function Calendar({ onSelectDate }: CalendarProps) {
   }
 
   function selectDay(day: number): void {
-    const date = new Date(cur.year, cur.month, day);
+    const date = new Date(cur.year, cur.month, day, 12, 0, 0);
+  console.log(date);
+  console.log(date.toISOString());
     setSelected({ day, month: cur.month, year: cur.year });
     onSelectDate?.(date);
   }
 
   function isToday(day: number): boolean {
-    return (
-      day === today.getDate() &&
-      cur.month === today.getMonth() &&
-      cur.year === today.getFullYear()
-    );
+    if (selectedDate) {
+      return (
+        day === date.getDate() &&
+        cur.month === date.getMonth() &&
+        cur.year === date.getFullYear()
+      );
+    } else {
+      return false;
+    }
+
   }
 
   function isSelected(day: number): boolean {
-    return (
-      selected !== null &&
-      day === selected.day &&
-      cur.month === selected.month &&
-      cur.year === selected.year
-    );
+    if (selectedDate) {
+      return (
+        selected !== null &&
+        day === date.getDate() &&
+        cur.month === date.getMonth() &&
+        cur.year === date.getFullYear()
+      );
+    } else {
+      return false;
+    }
+
   }
 
   return (

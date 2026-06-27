@@ -9,6 +9,7 @@
   --border: #2a2a2e;
   --code-bg: #141414;
   --accent: #56fe30;
+  --warning: #6c0000;
   --accent-bg: rgba(170, 59, 255, 0.12);
   --accent-border: rgba(170, 59, 255, 0.4);
   --social-bg: rgba(255, 255, 255, 0.05);
@@ -94,6 +95,15 @@
   font-size: 1.1rem;
 }
 
+.error-message-container {
+  margin: 1rem;
+  background-color: var(--warning);
+}
+
+.error-message {
+  text-align: center;
+}
+
 .form-textarea {
   height: 300px;
 }
@@ -102,7 +112,7 @@
   width: 92%
 }
 
-.submit-button {
+.submit-button, .add-button {
   margin-bottom: 1rem;
   padding: 0.7rem 2rem;
   border-radius: 15px;
@@ -119,13 +129,19 @@
   border: 1px solid red;
 }
 
-.home-button {
+.home-button, .submit-form-button {
   width: 80%;
   padding: 1rem 2rem;
   margin: 1rem;
   border-radius: 15px;
   border: 1px solid white;
   background-color: var(--code-bg);
+}
+
+.submit-form-button {
+  background-color: #56fe30;
+  color: var(--border);
+  border: 1px solid var(--border);
 }
 
 .task-display-item {
@@ -226,4 +242,24 @@
 .prio-picker-button-selected {
   background-color: #0a0a0a;
   color: rgb(228, 228, 228);
+}
+
+.dropdown-button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.dropdown-button-header, .dropdown-button-arrow {
+  margin: 0 1rem;
+}
+
+.add-button-container {
+  width: 100%;
+}
+
+.add-button {
+  margin: 1rem 1.8rem 0 0;
+  float: right;
 }

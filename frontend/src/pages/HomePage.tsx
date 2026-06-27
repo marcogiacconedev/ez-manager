@@ -16,6 +16,7 @@ export interface Task {
 
 const HomePage = (): React.ReactNode => {
     const username: string | null = useAuthStore.getState().username;
+    const token: string | null = useAuthStore.getState().token;
     const logout = useAuthStore((state) => state.logout);
     const navigate = useNavigate(); 
     const { tasks } = useTaskApi(0, 5);
@@ -24,38 +25,43 @@ const HomePage = (): React.ReactNode => {
         navigate('/login');
     }
 
+    if (!token) {
+        navigate('/login');
+        return
+    }
+
     return (
         <>
-        <div>
-            <div className="header-container">
-                <h1 className="header">Hello,</h1>
-                <h3 className="header-subtitle">{username}</h3>
-                <h3 className="header-subtitle">Oggi: {new Date().toDateString()}</h3>
-            </div>
-            <div className="card-container">
-                <h2 className="header-2">Task</h2>
-                <div className="card">
-                    {
-                        tasks.map((task) => (
-                        <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
-                            <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
-                            <p className="task-display-item task-name">▻ {task.name}</p>
-                            <p className="task-display-item task-description">▻ {task.description}</p>
-                            <hr className="task-line"/>
-                        </div>
-                        ))
-                    }
+            <div>
+                <div className="header-container">
+                    <h1 className="header">Hello,</h1>
+                    <h3 className="header-subtitle">{username}</h3>
+                    <h3 className="header-subtitle">Today: {new Date().toDateString()}</h3>
                 </div>
-            </div>
-            <div className="card-container">
-                <div className="card">
-                    <button className="home-button" onClick={() => navigate('/tasks')}>Task</button>
-                    <button className="home-button" onClick={() => navigate('/shopping')}>Shopping List</button>
-                    <button className="home-button">Metrics</button>
+                <div className="card-container">
+                    <h2 className="header-2">Task</h2>
+                    <div className="card">
+                        {
+                            tasks.map((task) => (
+                            <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
+                                <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
+                                <p className="task-display-item task-name">▻ {task.name}</p>
+                                <p className="task-display-item task-description">▻ {task.description}</p>
+                                <hr className="task-line"/>
+                            </div>
+                            ))
+                        }
+                    </div>
                 </div>
+                <div className="card-container">
+                    <div className="card">
+                        <button className="home-button" onClick={() => navigate('/tasks')}>Task</button>
+                        <button className="home-button" onClick={() => navigate('/shopping')}>Shopping List</button>
+                        <button className="home-button">Metrics</button>
+                    </div>
+                </div>
+                <button onClick={handleLogout}>logout</button>
             </div>
-            <button onClick={handleLogout}>logout</button>
-        </div>
         </>
     )
 }

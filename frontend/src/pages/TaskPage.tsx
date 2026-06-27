@@ -2,13 +2,16 @@ import { useState } from "react";
 import useTaskApi from "../hooks/useTaskApi";
 import Calendar from "../components/Calendar";
 import { useNavigate } from "react-router-dom";
+import DropdownButton from "../components/DropdownButton";
+import AddButton from "../components/AddButton";
 
 const TaskPage = (): React.ReactNode => {
     const [page, setPage] = useState<number>(0);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const resultsPerPage = 3;
+    const resultsPerPage = 4;
     const { tasks, totalPages } = useTaskApi(page, resultsPerPage);
     const navigate = useNavigate();
+    const [calendarOpen, setCalendaropen] = useState<boolean>(false);
 
     const changePage = (value: number) : void => {
         if (page + value < 0 || page + value >= totalPages) {
@@ -22,6 +25,10 @@ const TaskPage = (): React.ReactNode => {
             setSelectedDate(date);
         }
         console.log(selectedDate);
+    }
+
+    const toggleCalendarDropdown = (): void => {
+        setCalendaropen(!calendarOpen);
     }
 
     return (
@@ -47,11 +54,27 @@ const TaskPage = (): React.ReactNode => {
                         <p className="paginator-button">{page + 1}</p>
                         <button className="paginator-button" onClick={() => changePage(1)}>Next</button>
                     </div>
-                </div>
+                    <div className="add-button-container">
+                        <AddButton
+                        url={'/tasks/create'}
+                        text={'Create new'}
+                        ></AddButton>     
+                    </div>
+                </div>           
                 <div className="card">
-                    <Calendar
-                    onSelectDate={onSelectDate}
-                    ></Calendar>
+                    <DropdownButton
+                    header={'Date'}
+                    onOpen={toggleCalendarDropdown}
+                    dropdownOpen={calendarOpen}
+                    ></DropdownButton>
+                    {calendarOpen && (
+                        <>
+                            <Calendar
+                            selectedDate={null}
+                            onSelectDate={onSelectDate}
+                            ></Calendar>
+                        </>
+                    )}
                 </div>
             </div>
         </>

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
@@ -23,6 +23,11 @@ function App() {
             <TaskPage />
           </ProtectedRoute>
         } />
+        <Route path='/tasks/create/' element={
+          <ProtectedRoute>
+            <TaskForm />
+          </ProtectedRoute>
+        }/>
         <Route path='/tasks/create/:taskId' element={
           <ProtectedRoute>
             <TaskForm />
@@ -33,6 +38,7 @@ function App() {
             <ShoppingListPage />
           </ProtectedRoute>
         } />
+        <Route path="*" element={<Navigate to="/home" replace />} />        
       </Routes>
     </BrowserRouter>
   )
