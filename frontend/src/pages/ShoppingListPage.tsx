@@ -1,7 +1,12 @@
+import Header from "../components/Header";
+
 const ShoppingListPage = (): React.ReactNode => {
     return (
         <>
-            <h1>ShoppingListPage</h1>
+            <Header
+                header="Shopping"
+                username={null}
+            ></Header>
         </>
     )
 }

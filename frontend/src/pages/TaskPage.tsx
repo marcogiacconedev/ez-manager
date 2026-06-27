@@ -4,6 +4,7 @@ import Calendar from "../components/Calendar";
 import { useNavigate } from "react-router-dom";
 import DropdownButton from "../components/DropdownButton";
 import AddButton from "../components/AddButton";
+import Header from "../components/Header";
 
 const TaskPage = (): React.ReactNode => {
     const [page, setPage] = useState<number>(0);
@@ -33,10 +34,10 @@ const TaskPage = (): React.ReactNode => {
 
     return (
         <>
-            <div className="header-container">
-                <h1 className="header">Task</h1>
-                <h3 className="header-subtitle">Today: {new Date().toDateString()}</h3>
-            </div>
+            <Header
+                header="Task"
+                username={null}
+            ></Header>
             <div className="card-container">
                 <div className="card">
                     {

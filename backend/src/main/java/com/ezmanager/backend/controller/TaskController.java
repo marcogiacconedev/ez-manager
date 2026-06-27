@@ -1,8 +1,10 @@
 package com.ezmanager.backend.controller;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,9 +40,10 @@ public class TaskController {
     public ResponseEntity<Page<TaskResponse>> getTasks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime date,
             @AuthenticationPrincipal String userId) {
 
-        return ResponseEntity.ok(taskService.getTasksByUserId(UUID.fromString(userId), page, size));
+        return ResponseEntity.ok(taskService.getTasksByUserId(UUID.fromString(userId), page, size, date));
     }
 
     @GetMapping("/{taskId}")

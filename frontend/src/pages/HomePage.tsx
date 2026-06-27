@@ -3,6 +3,7 @@ import useTaskApi from "../hooks/useTaskApi";
 import { useNavigate } from "react-router-dom";
 import DropdownButton from "../components/DropdownButton";
 import { useState } from "react";
+import Header from "../components/Header";
 
 export interface Task {
     id: string,
@@ -37,11 +38,10 @@ const HomePage = (): React.ReactNode => {
     return (
         <>
             <div>
-                <div className="header-container">
-                    <h1 className="header">Hello,</h1>
-                    <h3 className="header-subtitle">{username}</h3>
-                    <h3 className="header-subtitle">Today: {new Date().toDateString()}</h3>
-                </div>
+                <Header
+                    header="Hello,"
+                    username={username}
+                ></Header>
                 <div className="card-container">
                     <h2 className="header-2">Task</h2>
                     <div className="card">

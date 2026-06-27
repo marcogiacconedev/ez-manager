@@ -24,9 +24,13 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Page<TaskResponse> getTasksByUserId(UUID userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return taskRepository.findByUserId(userId, pageable).map(TaskResponse::new);
+    public Page<TaskResponse> getTasksByUserId(UUID userId, int page, int size, LocalDateTime date) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        if (date == null) {
+            return taskRepository.findByUserId(userId, pageable).map(TaskResponse::new);
+        }
+
+        return taskRepository.findByUserIdAndDate(userId, date, pageable).map(TaskResponse::new);
     }
 
     public TaskResponse getTaskById(UUID taskId, UUID userId) {

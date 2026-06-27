@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import Calendar from "../components/Calendar";
 import PriorityPicker from "../components/PriorityPicker";
+import Header from "../components/Header";
 
 export interface TaskRequestBody {
     name: string,
@@ -22,7 +23,6 @@ const TaskForm = (): React.ReactNode => {
     const [description, setDescription] = useState<string>("");
     const [taskName, setTaskName] = useState<string>("");
     const [priority, setPriority] = useState<number>(1);
-    const [wholeDay, setWholeDay] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
 
@@ -38,7 +38,6 @@ const TaskForm = (): React.ReactNode => {
                 setDescription(data.description);
                 setTaskName(data.name);
                 setPriority(data.priority);
-                setWholeDay(data.wholeDay);
                 setCompletedAt(data.completedAt);
             })
         }      
@@ -85,12 +84,10 @@ const TaskForm = (): React.ReactNode => {
 
     return (
         <>
-            <div>
-                <div className="header-container">
-                    <h1 className="header">Task</h1>
-                    <h3 className="header-subtitle">Today: {new Date().toDateString()}</h3>
-                </div>
-            </div>
+            <Header
+                header="Task"
+                username={null}
+            ></Header>
             <div className="card">
                 <input type="text" placeholder="name" className="form-input" value={taskName} onChange={e => {setTaskName(e.target.value)}}/>
                 <textarea name="description" id="description" placeholder="description" className="form-textarea" value={description} onChange={e => {setDescription(e.target.value)}}></textarea>
