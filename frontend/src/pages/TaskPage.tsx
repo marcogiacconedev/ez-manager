@@ -35,13 +35,14 @@ const TaskPage = (): React.ReactNode => {
         <>
             <div className="header-container">
                 <h1 className="header">Task</h1>
-                <h3 className="header-subtitle">Oggi: {new Date().toDateString()}</h3>
+                <h3 className="header-subtitle">Today: {new Date().toDateString()}</h3>
             </div>
             <div className="card-container">
                 <div className="card">
                     {
                         tasks.map((task) => (
                         <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
+                            <div className={`task-completed-led ${task.completedAt ? 'completed' : ''}`}></div>
                             <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                             <p className="task-display-item task-name">▻ {task.name}</p>
                             <p className="task-display-item task-description">▻ {task.description}</p>

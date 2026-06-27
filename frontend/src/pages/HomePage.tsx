@@ -48,6 +48,7 @@ const HomePage = (): React.ReactNode => {
                         {
                             tasks.map((task) => (
                             <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
+                                <div className={`task-completed-led ${task.completedAt ? 'completed' : ''}`}></div>
                                 <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                                 <p className="task-display-item task-name">▻ {task.name}</p>
                                 <p className="task-display-item task-description">▻ {task.description}</p>
