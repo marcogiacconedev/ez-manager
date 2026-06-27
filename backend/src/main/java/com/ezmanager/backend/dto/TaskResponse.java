@@ -1,5 +1,6 @@
 package com.ezmanager.backend.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public class TaskResponse {
     private UUID id;
     private String name;
     private String description;
-    private LocalDateTime date;
+    private LocalDate date;
     private Boolean wholeDay;
     private LocalDateTime createdAt;
     private LocalDateTime completedAt;
@@ -32,7 +33,7 @@ public class TaskResponse {
     public UUID getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
-    public LocalDateTime getDate() { return date; }
+    public LocalDate getDate() { return date; }
     public Boolean getWholeDay() { return wholeDay; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getCompletedAt() { return completedAt; }

@@ -1,5 +1,6 @@
 package com.ezmanager.backend.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class CreateTaskRequest {
     private String name;
 
     private String description;
-    private LocalDateTime date;
+    private LocalDate date;
     private Boolean wholeDay;
     private Integer priority;
     private UUID subtaskOf;
@@ -23,8 +24,8 @@ public class CreateTaskRequest {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public LocalDateTime getDate() { return date; }
-    public void setDate(LocalDateTime date) { this.date = date; }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
     public Boolean getWholeDay() { return wholeDay; }
     public void setWholeDay(Boolean wholeDay) { this.wholeDay = wholeDay; }
