@@ -15,6 +15,7 @@ public class CreateTaskRequest {
     private Boolean wholeDay;
     private Integer priority;
     private UUID subtaskOf;
+    private LocalDateTime completedAt;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -33,4 +34,7 @@ public class CreateTaskRequest {
 
     public UUID getSubtaskOf() { return subtaskOf; }
     public void setSubtaskOf(UUID subtaskOf) { this.subtaskOf = subtaskOf; }
+
+    public LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
 }

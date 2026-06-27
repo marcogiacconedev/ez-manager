@@ -49,6 +49,7 @@ public class TaskService {
         task.setPriority(dto.getPriority());
         task.setSubtaskOf(dto.getSubtaskOf());
         task.setCreatedAt(LocalDateTime.now());
+        task.setCompletedAt(dto.getCompletedAt());
 
         return new TaskResponse(taskRepository.save(task));
     }
