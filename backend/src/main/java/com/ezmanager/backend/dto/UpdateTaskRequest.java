@@ -10,6 +10,7 @@ public class UpdateTaskRequest {
     private Boolean wholeDay;
     private Integer priority;
     private UUID subtaskOf;
+    private LocalDateTime completedAt;
 
     // getters e setters
     public String getName() { return name; }
@@ -29,4 +30,7 @@ public class UpdateTaskRequest {
 
     public UUID getSubtaskOf() { return subtaskOf; }
     public void setSubtaskOf(UUID subtaskOf) { this.subtaskOf = subtaskOf; }
+
+    public LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
 }

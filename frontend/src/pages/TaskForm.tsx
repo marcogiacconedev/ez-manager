@@ -10,7 +10,8 @@ export interface TaskRequestBody {
     date: Date,
     wholeDay: boolean | null,
     priority: number | null,
-    subtaskOf: string | null
+    subtaskOf: string | null,
+    completedAt: Date | null
 }
 
 const TaskForm = (): React.ReactNode => {
@@ -20,7 +21,7 @@ const TaskForm = (): React.ReactNode => {
     const [date, setDate] = useState<Date | null>(new Date());
     const [description, setDescription] = useState<string>("");
     const [taskName, setTaskName] = useState<string>("");
-    const [priority, setPriority] = useState<number>(0);
+    const [priority, setPriority] = useState<number>(1);
     const [wholeDay, setWholeDay] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
@@ -38,6 +39,7 @@ const TaskForm = (): React.ReactNode => {
                 setTaskName(data.name);
                 setPriority(data.priority);
                 setWholeDay(data.wholeDay);
+                setCompletedAt(data.completedAt);
             })
         }      
     }, [])
@@ -55,7 +57,8 @@ const TaskForm = (): React.ReactNode => {
                 date: date ? date : new Date(),
                 wholeDay: true,
                 priority: priority,
-                subtaskOf: null
+                subtaskOf: null,
+                completedAt: completedAt
             }
         console.log(requestBody, 'request body');
         const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
@@ -100,12 +103,19 @@ const TaskForm = (): React.ReactNode => {
                     onSelect={(value) => setPriority(value)}
                     priority={priority}
                 ></PriorityPicker>
-                <button className="submit-form-button" onClick={submitForm}>{taskId ? 'Apply Changes' : 'Submit'}</button>
-                	{ error && 
-						<div className="error-message-container">
-							<p className="error-message">{error}</p>
-						</div>
-					}
+                <div className="submit-form-container">
+                    <button 
+                        className={`mark-as-done-button ${completedAt ? 'done' : ''}`}
+                        onClick={() => setCompletedAt(new Date())}>
+                        {completedAt ? 'Task completed ✓' : 'Mark as completed'}
+                    </button>
+                    <button className="submit-form-button" onClick={submitForm}>{taskId ? 'Apply Changes' : 'Submit'}</button>
+                    { error && 
+                        <div className="error-message-container">
+                            <p className="error-message">{error}</p>
+                        </div>
+                    }
+                </div>
             </div>
         </>
     )

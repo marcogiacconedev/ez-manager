@@ -138,8 +138,13 @@
   background-color: rgba(255, 255, 255, 0);
 }
 
-.submit-form-button {
-  width: 80%;
+.submit-form-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.submit-form-button, .mark-as-done-button {
   padding: 1rem 2rem;
   margin: 1rem;
   border-radius: 15px;
@@ -147,8 +152,15 @@
   background-color: var(--code-bg);
 }
 
+.mark-as-done-button {
+  background-color: #ddd;
+  color: #5a633e;
+  border: none;
+  margin-bottom: 0;
+}
+
 .submit-form-button {
-  background-color: #56fe30;
+  background-color: var(--accent);
   color: var(--border);
   border: 1px solid var(--border);
 }
@@ -271,4 +283,8 @@
 .add-button {
   margin: 1rem 1.8rem 0 0;
   float: right;
+}
+
+.done {
+  background-color: var(--accent);
 }

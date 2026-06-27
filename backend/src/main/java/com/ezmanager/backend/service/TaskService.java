@@ -76,6 +76,7 @@ public class TaskService {
         task.setWholeDay(dto.getWholeDay());
         task.setPriority(dto.getPriority());
         task.setSubtaskOf(dto.getSubtaskOf());
+        task.setCompletedAt(dto.getCompletedAt());
 
         return new TaskResponse(taskRepository.save(task));
     }

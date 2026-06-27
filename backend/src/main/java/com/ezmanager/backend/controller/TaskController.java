@@ -22,6 +22,7 @@ import com.ezmanager.backend.dto.UpdateTaskRequest;
 import com.ezmanager.backend.service.TaskService;
 
 import jakarta.validation.Valid;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -74,6 +75,8 @@ public class TaskController {
         @Valid @RequestBody UpdateTaskRequest dto,
         @AuthenticationPrincipal String userId
     ) {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(dto));
         return ResponseEntity.ok(taskService.updateTask(taskId, dto, UUID.fromString(userId)));
     }
 }
