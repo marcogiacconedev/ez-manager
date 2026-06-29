@@ -33,23 +33,21 @@ public class ShoppingItemController {
         this.shoppingItemService = shoppingItemService;
     }
 
-    @GetMapping("/{shoppingListId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<Page<ShoppingItemResponse>> getShoppingItems(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
-        @Valid @PathVariable UUID shoppingListId,
         @AuthenticationPrincipal String userId
     ) {
-        return ResponseEntity.ok(shoppingItemService.getShoppingItemsByShoppingListId(page, size, shoppingListId));
+        return ResponseEntity.ok(shoppingItemService.getShoppingItemsByShoppingListId(page, size, UUID.fromString(userId)));
     }
 
-    @PostMapping("/{shoppingListId}")
+    @PostMapping
     public ResponseEntity<ShoppingItemResponse> createShoppingItem(
         @Valid @RequestBody CreateShoppingItemRequest dto,
-        @PathVariable UUID shoppingListId,
         @AuthenticationPrincipal String userId
     ) {
-        ShoppingItemResponse created = shoppingItemService.createShoppingItem(dto, shoppingListId);
+        ShoppingItemResponse created = shoppingItemService.createShoppingItem(dto, UUID.fromString(userId));
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

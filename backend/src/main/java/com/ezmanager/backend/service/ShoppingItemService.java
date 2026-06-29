@@ -1,6 +1,5 @@
 package com.ezmanager.backend.service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +16,8 @@ import com.ezmanager.backend.model.ShoppingList;
 import com.ezmanager.backend.repository.ShoppingItemRepository;
 import com.ezmanager.backend.repository.ShoppingListRepository;
 
+import tools.jackson.databind.ObjectMapper;
+
 @Service
 public class ShoppingItemService {
     private final ShoppingItemRepository shoppingItemRepository;
@@ -30,29 +31,28 @@ public class ShoppingItemService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public Page<ShoppingItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID shoppingListId) {
+    public Page<ShoppingItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID userId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return shoppingItemRepository.findByShoppingListId(shoppingListId, pageable).map(shoppingItem -> new ShoppingItemResponse(shoppingItem));
+        return shoppingItemRepository.findByUserId(userId, pageable).map(shoppingItem -> new ShoppingItemResponse(shoppingItem));
     }
     
-    public ShoppingItemResponse createShoppingItem(CreateShoppingItemRequest dto, UUID shoppingListId) {
+    public ShoppingItemResponse createShoppingItem(CreateShoppingItemRequest dto, UUID userId) {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(dto));
+        System.out.println(userId);
         ShoppingItem shoppingItem = new ShoppingItem();
 
-        shoppingItem.setAdded(dto.getAdded());
+        shoppingItem.setUserId(userId);
         shoppingItem.setCategory(dto.getCategory());
-        shoppingItem.setCreatedAt(LocalDateTime.now());
         shoppingItem.setName(dto.getName());
         shoppingItem.setPrice(dto.getPrice());
-        shoppingItem.setQuantity(dto.getQuantity());
-        shoppingItem.setShoppingListId(shoppingListId);
 
         return new ShoppingItemResponse(shoppingItemRepository.save(shoppingItem));
     }
 
     public void deleteShoppingItem(UUID shoppingItemId, UUID userId) {
         ShoppingItem shoppingItem = shoppingItemRepository.findById(shoppingItemId).orElseThrow(() -> new RuntimeException("Item non trovato"));
-        ShoppingList shoppingList = shoppingListRepository.findById(shoppingItem.getShoppingListId()).orElseThrow(() -> new RuntimeException("Shopping list non trovata"));
-        if (shoppingList.getUserId().equals(userId)) {
+        if (shoppingItem.getUserId().equals(userId)) {
             new RuntimeException("Non autorizzato");
         }
 
@@ -67,12 +67,9 @@ public class ShoppingItemService {
             new RuntimeException("Non autorizzato!");
         }
 
-        shoppingItem.setAdded(dto.getAdded());
         shoppingItem.setCategory(dto.getCategory());
-        shoppingItem.setCreatedAt(shoppingItem.getCreatedAt());
         shoppingItem.setName(dto.getName());
         shoppingItem.setPrice(dto.getPrice());
-        shoppingItem.setShoppingListId(dto.getShoppingListId());
 
         return new ShoppingItemResponse(shoppingItemRepository.save(shoppingItem));
     }

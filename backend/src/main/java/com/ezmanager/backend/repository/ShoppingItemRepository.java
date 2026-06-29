@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ezmanager.backend.model.ShoppingItem;
 
 public interface ShoppingItemRepository extends JpaRepository<ShoppingItem, UUID>{
-    Page<ShoppingItem> findByShoppingListId(UUID shoppingListId, Pageable pageable);
+    Page<ShoppingItem> findByUserId(UUID shoppingListId, Pageable pageable);
 }
