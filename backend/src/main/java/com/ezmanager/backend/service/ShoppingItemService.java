@@ -46,6 +46,8 @@ public class ShoppingItemService {
         shoppingItem.setCategory(dto.getCategory());
         shoppingItem.setName(dto.getName());
         shoppingItem.setPrice(dto.getPrice());
+        shoppingItem.setSize(dto.getSize());
+        shoppingItem.setMeasure(dto.getMeasure());
 
         return new ShoppingItemResponse(shoppingItemRepository.save(shoppingItem));
     }

@@ -25,11 +25,17 @@ public class ShoppingItem {
     @Column(nullable = false, name = "name")
     private String name;
 
-    @Column(name = "category")
+    @Column(nullable = false, name = "category")
     private String category;
 
     @Column(nullable = false, name = "price")
     private Float price;
+
+    @Column(nullable = false, name = "size")
+    private Float size;
+
+    @Column(nullable = false, name = "measure")
+    private String measure;
 
     @OneToMany(mappedBy = "shoppingItem")
     private List<ShoppingListItem> listItems = new ArrayList<>();
@@ -50,5 +56,12 @@ public class ShoppingItem {
     public UUID getUserId() { return userId; }
     public void setUserId(UUID userId) { this.userId = userId; }
 
+    public Float getSize() { return size; }
+    public void setSize(Float size) { this.size = size; }
+    
+    public String getMeasure() { return measure; }
+    public void setMeasure(String measure) { this.measure = measure; }
+    
     public List<ShoppingListItem> getListItems() { return listItems; }
+    public void setListItems(List<ShoppingListItem> listItems) { this.listItems = listItems; }
 }
