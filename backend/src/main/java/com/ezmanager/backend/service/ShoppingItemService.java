@@ -12,23 +12,17 @@ import com.ezmanager.backend.dto.CreateShoppingItemRequest;
 import com.ezmanager.backend.dto.ShoppingItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.model.ShoppingItem;
-import com.ezmanager.backend.model.ShoppingList;
 import com.ezmanager.backend.repository.ShoppingItemRepository;
-import com.ezmanager.backend.repository.ShoppingListRepository;
 
-import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class ShoppingItemService {
     private final ShoppingItemRepository shoppingItemRepository;
-    private final ShoppingListRepository shoppingListRepository;
 
     public ShoppingItemService(
-        ShoppingItemRepository shoppingItemRepository,
-        ShoppingListRepository shoppingListRepository
+        ShoppingItemRepository shoppingItemRepository
     ) {
         this.shoppingItemRepository = shoppingItemRepository;
-        this.shoppingListRepository = shoppingListRepository;
     }
 
     public Page<ShoppingItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID userId) {
@@ -37,9 +31,6 @@ public class ShoppingItemService {
     }
     
     public ShoppingItemResponse createShoppingItem(CreateShoppingItemRequest dto, UUID userId) {
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(dto));
-        System.out.println(userId);
         ShoppingItem shoppingItem = new ShoppingItem();
 
         shoppingItem.setUserId(userId);
@@ -63,15 +54,16 @@ public class ShoppingItemService {
 
     public ShoppingItemResponse updateShoppingItem(UpdateShoppingItemRequest dto, UUID shoppingItemId, UUID userId) {
         ShoppingItem shoppingItem = shoppingItemRepository.findById(shoppingItemId).orElseThrow(() -> new RuntimeException("Item non trovato!"));
-        ShoppingList shoppingList = shoppingListRepository.findById(dto.getShoppingListId()).orElseThrow(() -> new RuntimeException("Lista non trovata!"));
 
-        if (!shoppingList.getUserId().equals(userId)) {
+        if (!shoppingItem.getUserId().equals(userId)) {
             new RuntimeException("Non autorizzato!");
         }
 
         shoppingItem.setCategory(dto.getCategory());
         shoppingItem.setName(dto.getName());
         shoppingItem.setPrice(dto.getPrice());
+        shoppingItem.setSize(dto.getSize());
+        shoppingItem.setMeasure(dto.getMeasure());
 
         return new ShoppingItemResponse(shoppingItemRepository.save(shoppingItem));
     }

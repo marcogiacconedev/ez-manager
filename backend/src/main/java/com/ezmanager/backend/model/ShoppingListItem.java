@@ -31,4 +31,15 @@ public class ShoppingListItem {
 
     @Column(nullable = false, name = "added")
     private Boolean added;
+
+    public Boolean getAdded() { return added; }
+    public void setAdded(Boolean added) { this.added = added; }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public ShoppingItem getShoppingItem() { return shoppingItem; }
+    public void setShoppingItem(ShoppingItem shoppingItem) { this.shoppingItem = shoppingItem; }
+    public ShoppingList getShoppingList() { return shoppingList; }
+    public void setShoppingList(ShoppingList shoppingList) { this.shoppingList = shoppingList; }
 }

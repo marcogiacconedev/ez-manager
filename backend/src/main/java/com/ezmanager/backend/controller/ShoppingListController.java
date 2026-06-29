@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ezmanager.backend.dto.AddItemToListRequest;
 import com.ezmanager.backend.dto.CreateShoppingListRequest;
+import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.ShoppingListResponse;
 import com.ezmanager.backend.dto.UpdateShoppingListRequest;
+import com.ezmanager.backend.service.ShoppingListItemService;
 import com.ezmanager.backend.service.ShoppingListService;
 
 import jakarta.validation.Valid;
@@ -28,9 +31,14 @@ import jakarta.validation.Valid;
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
+    private final ShoppingListItemService shoppingListItemService;
 
-    public ShoppingListController(ShoppingListService shoppingListService) {
+    public ShoppingListController(
+        ShoppingListService shoppingListService, 
+        ShoppingListItemService shoppingListItemService
+    ) {
         this.shoppingListService = shoppingListService;
+        this.shoppingListItemService = shoppingListItemService;
     }
 
     @GetMapping
@@ -67,5 +75,16 @@ public class ShoppingListController {
         @AuthenticationPrincipal String userId
     ) {
         return ResponseEntity.ok(shoppingListService.updateShoppingList(shoppingListId, dto, UUID.fromString(userId)));
+    }
+
+    @PostMapping("/{shoppingListId}/items")
+    public ResponseEntity<ShoppingListItemResponse> addItemToList(
+        @PathVariable UUID shoppingListId,
+        @Valid @RequestBody AddItemToListRequest dto,
+        @AuthenticationPrincipal String userId
+    ) {
+        System.out.print("qui");
+        ShoppingListItemResponse created = shoppingListItemService.assignItemToList(dto, shoppingListId, UUID.fromString(userId));
+        return ResponseEntity.ok(created);
     }
 }
