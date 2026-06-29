@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ezmanager.backend.dto.CreateShoppingItemRequest;
 import com.ezmanager.backend.dto.ShoppingItemResponse;
+import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.service.ShoppingItemService;
 
@@ -33,13 +34,15 @@ public class ShoppingItemController {
         this.shoppingItemService = shoppingItemService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Page<ShoppingItemResponse>> getShoppingItems(
+    @GetMapping("/{shoppingListId}")
+    public ResponseEntity<Page<ShoppingListItemResponse>> getShoppingItems(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
+        @PathVariable UUID shoppingListId,
         @AuthenticationPrincipal String userId
     ) {
-        return ResponseEntity.ok(shoppingItemService.getShoppingItemsByShoppingListId(page, size, UUID.fromString(userId)));
+        Page<ShoppingListItemResponse> items = shoppingItemService.getShoppingItemsByShoppingListId(page, size, shoppingListId);
+        return ResponseEntity.ok(items);
     }
 
     @PostMapping

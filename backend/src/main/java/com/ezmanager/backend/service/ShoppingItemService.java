@@ -10,24 +10,34 @@ import org.springframework.stereotype.Service;
 
 import com.ezmanager.backend.dto.CreateShoppingItemRequest;
 import com.ezmanager.backend.dto.ShoppingItemResponse;
+import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.model.ShoppingItem;
 import com.ezmanager.backend.repository.ShoppingItemRepository;
+import com.ezmanager.backend.repository.ShoppingListItemRepository;
 
 
 @Service
 public class ShoppingItemService {
     private final ShoppingItemRepository shoppingItemRepository;
+    private final ShoppingListItemRepository shoppingListItemRepository;
 
     public ShoppingItemService(
-        ShoppingItemRepository shoppingItemRepository
+        ShoppingItemRepository shoppingItemRepository,
+        ShoppingListItemRepository shoppingListItemRepository
     ) {
         this.shoppingItemRepository = shoppingItemRepository;
+        this.shoppingListItemRepository = shoppingListItemRepository;
     }
 
-    public Page<ShoppingItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID userId) {
+    public Page<ShoppingItemResponse> getShoppingItemsByShoppingListIda(int page, int size, UUID userId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return shoppingItemRepository.findByUserId(userId, pageable).map(shoppingItem -> new ShoppingItemResponse(shoppingItem));
+    }
+
+    public Page<ShoppingListItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID shoppingListId) {
+        Pageable pageable = PageRequest.of(page, size);      
+        return shoppingListItemRepository.findByShoppingListId(shoppingListId, pageable).map(shoppingListItem -> new ShoppingListItemResponse(shoppingListItem));
     }
     
     public ShoppingItemResponse createShoppingItem(CreateShoppingItemRequest dto, UUID userId) {

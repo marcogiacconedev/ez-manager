@@ -29,7 +29,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/shoppinglists")
 public class ShoppingListController {
-
     private final ShoppingListService shoppingListService;
     private final ShoppingListItemService shoppingListItemService;
 
@@ -83,7 +82,6 @@ public class ShoppingListController {
         @Valid @RequestBody AddItemToListRequest dto,
         @AuthenticationPrincipal String userId
     ) {
-        System.out.print("qui");
         ShoppingListItemResponse created = shoppingListItemService.assignItemToList(dto, shoppingListId, UUID.fromString(userId));
         return ResponseEntity.ok(created);
     }

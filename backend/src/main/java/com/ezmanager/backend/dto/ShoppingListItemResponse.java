@@ -2,6 +2,8 @@ package com.ezmanager.backend.dto;
 
 import java.util.UUID;
 
+import com.ezmanager.backend.model.ShoppingItem;
+import com.ezmanager.backend.model.ShoppingList;
 import com.ezmanager.backend.model.ShoppingListItem;
 
 public class ShoppingListItemResponse {
@@ -10,13 +12,19 @@ public class ShoppingListItemResponse {
     private UUID shoppingItemId;
     private Integer quantity;
     private Boolean added;
+    private String itemName;
+    private String listName;
 
-    public ShoppingListItemResponse(ShoppingListItem entity) {
-        this.id = entity.getId();
-        this.shoppingListId = entity.getShoppingList().getId();
-        this.shoppingItemId = entity.getShoppingItem().getId();
-        this.quantity = entity.getQuantity();
-        this.added = entity.getAdded();
+    public ShoppingListItemResponse(ShoppingListItem shoppingListItem) {
+        ShoppingItem item = shoppingListItem.getShoppingItem();
+        ShoppingList list = shoppingListItem.getShoppingList();
+        this.id = shoppingListItem.getId();
+        this.shoppingListId = list.getId();
+        this.listName = list.getName();
+        this.shoppingItemId = item.getId();
+        this.itemName = item.getName();
+        this.quantity = shoppingListItem.getQuantity();
+        this.added = shoppingListItem.getAdded();
     }
 
     // getters and setters
@@ -34,4 +42,10 @@ public class ShoppingListItemResponse {
 
     public Boolean getAdded() { return added; }
     public void setAdded(Boolean added) { this.added = added; }
+
+    public String getItemName() { return itemName; }
+    public void setItemName(String itemName) { this.itemName = itemName; }
+    
+    public String getListName() { return listName; }
+    public void setListName(String listName) { this.listName = listName; }
 }
