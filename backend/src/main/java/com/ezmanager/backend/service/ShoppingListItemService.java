@@ -1,5 +1,6 @@
 package com.ezmanager.backend.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -51,5 +52,14 @@ public class ShoppingListItemService {
         ObjectMapper mapper = new ObjectMapper();
         System.out.print(mapper.toString());
         return new ShoppingListItemResponse(shoppingListItemRepository.save(shoppingListItem));
+    }
+
+    public void deleteAllItemsInList(UUID shoppingListId, UUID userId) {
+        ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId).orElseThrow(() -> new RuntimeException("Lista inesistente"));
+        if (!shoppingList.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato");
+        }
+        List<ShoppingListItem> toBeDeleted = shoppingListItemRepository.findByShoppingListId(shoppingListId); 
+        shoppingListItemRepository.deleteAll(toBeDeleted);
     }
 }

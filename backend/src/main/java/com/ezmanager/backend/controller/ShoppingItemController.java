@@ -21,20 +21,25 @@ import com.ezmanager.backend.dto.ShoppingItemResponse;
 import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.service.ShoppingItemService;
+import com.ezmanager.backend.service.ShoppingListItemService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/shoppingitems")
 public class ShoppingItemController {
-    
     private final ShoppingItemService shoppingItemService;
+    private final ShoppingListItemService shoppingListItemService;
 
-    public ShoppingItemController(ShoppingItemService shoppingItemService) {
+    public ShoppingItemController(
+        ShoppingItemService shoppingItemService,
+        ShoppingListItemService shoppingListItemService
+    ) {
         this.shoppingItemService = shoppingItemService;
+        this.shoppingListItemService = shoppingListItemService;
     }
 
-    @GetMapping("/{shoppingListId}")
+    @GetMapping("/{shoppingListId}/items")
     public ResponseEntity<Page<ShoppingListItemResponse>> getShoppingItems(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
@@ -43,6 +48,15 @@ public class ShoppingItemController {
     ) {
         Page<ShoppingListItemResponse> items = shoppingItemService.getShoppingItemsByShoppingListId(page, size, shoppingListId);
         return ResponseEntity.ok(items);
+    }
+
+    @DeleteMapping("/{shoppingListId}/items")
+    public ResponseEntity<Void> deleteAllItemsInList(
+        @PathVariable UUID shoppingListId,
+        @AuthenticationPrincipal String userId
+    ) {
+        shoppingListItemService.deleteAllItemsInList(shoppingListId, UUID.fromString(userId));
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
