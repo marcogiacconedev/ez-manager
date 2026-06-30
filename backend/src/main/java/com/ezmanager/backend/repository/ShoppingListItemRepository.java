@@ -1,6 +1,7 @@
 package com.ezmanager.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +16,6 @@ public interface ShoppingListItemRepository extends JpaRepository<ShoppingListIt
 
     Page<ShoppingListItem> findByShoppingListId(UUID shoppingListId, Pageable pageable);
     List<ShoppingListItem> findByShoppingListId(UUID shoppingListId);
-    ShoppingListItem findByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
+    Optional<ShoppingListItem> findByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
     Boolean existsByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
 }

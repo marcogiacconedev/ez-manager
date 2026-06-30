@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ezmanager.backend.dto.AddItemToListRequest;
 import com.ezmanager.backend.dto.ShoppingListItemResponse;
+import com.ezmanager.backend.dto.UpdateShoppingListItemRequest;
 import com.ezmanager.backend.model.ShoppingItem;
 import com.ezmanager.backend.model.ShoppingList;
 import com.ezmanager.backend.model.ShoppingListItem;
@@ -70,9 +71,25 @@ public class ShoppingListItemService {
     }
 
     public void deleteItemFromList(UUID shoppingListId, UUID shoppingItemId, UUID userId) {
-        ShoppingListItem shoppingListItem = shoppingListItemRepository.findByShoppingListIdAndShoppingItemId(shoppingListId, shoppingItemId);
+        ShoppingListItem shoppingListItem = shoppingListItemRepository.findByShoppingListIdAndShoppingItemId(shoppingListId, shoppingItemId).orElseThrow(() -> new RuntimeException("Item non nella lista"));
         ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId).orElseThrow(() -> new RuntimeException("lista non trovata"));
         if (!shoppingList.getUserId().equals(userId)) throw new RuntimeException("Non autorizzato");
         shoppingListItemRepository.delete(shoppingListItem);
+    }
+
+    public ShoppingListItemResponse updateShoppingListItem(
+        UpdateShoppingListItemRequest dto,
+        UUID shoppingListId,
+        UUID shoppingItemId,
+        UUID userId
+    ) {
+        ShoppingListItem shoppingListItem = shoppingListItemRepository.findByShoppingListIdAndShoppingItemId(shoppingListId, shoppingItemId).orElseThrow(() -> new RuntimeException("Item non nella lista"));
+        ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId).orElseThrow(() -> new RuntimeException("Lista inesistente"));
+        if (!shoppingList.getUserId().equals(userId)) { throw new RuntimeException("Non autorizzato"); }
+        
+        shoppingListItem.setAdded(dto.getAdded());
+        shoppingListItem.setQuantity(dto.getQuantity());
+        
+        return new ShoppingListItemResponse(shoppingListItemRepository.save(shoppingListItem));
     }
 }
