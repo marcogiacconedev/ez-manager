@@ -15,4 +15,6 @@ public interface ShoppingListItemRepository extends JpaRepository<ShoppingListIt
 
     Page<ShoppingListItem> findByShoppingListId(UUID shoppingListId, Pageable pageable);
     List<ShoppingListItem> findByShoppingListId(UUID shoppingListId);
+    ShoppingListItem findByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
+    Boolean existsByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
 }

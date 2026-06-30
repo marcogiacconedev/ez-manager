@@ -59,6 +59,16 @@ public class ShoppingItemController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{shoppingListId}/items/{shoppingItemId}")
+    public ResponseEntity<Void> deleteItemFromList(
+        @PathVariable UUID shoppingListId,
+        @PathVariable UUID shoppingItemId,
+        @AuthenticationPrincipal String userId
+    ) {
+        shoppingListItemService.deleteItemFromList(shoppingListId, shoppingItemId, UUID.fromString(userId));
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping
     public ResponseEntity<ShoppingItemResponse> createShoppingItem(
         @Valid @RequestBody CreateShoppingItemRequest dto,
