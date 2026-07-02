@@ -18,8 +18,19 @@ export interface ShoppingListItem {
     itemName: string,
     listName: string,
     price?: number,
-    quantity?: number,
+    quantity: number,
     shoppingItemId: string,
+    shoppingListId?: string,
+    category: string,
+    measure: string
+}
+
+export interface UpdateShoppingListItemRequest {
+    added: boolean,
+    category: string,
+    name: string,
+    price?: number,
+    quantity: number,
     shoppingListId?: string
 }
 
@@ -33,8 +44,18 @@ export interface Item {
     userId: string
 }
 
+export interface CreateListItemRequest {
+    quantity: number,
+    itemId: string
+}
+
+export interface UpdateListItemRequest {
+    added: boolean,
+    quantity: number
+}
+
 const ShoppingListForm = (): React.ReactNode => {
-    const { shoppingListId } = useParams<{ shoppingListId: string }>();
+    let { shoppingListId } = useParams<{ shoppingListId: string }>();
     const token = useAuthStore.getState().token;
     const [name, setName] = useState<string>('');
     const [status, setStatus] = useState<string>('PENDING');
@@ -62,9 +83,11 @@ const ShoppingListForm = (): React.ReactNode => {
             itemName: item.name,
             listName: name,
             price: item.price,
-            quantity: undefined,
+            quantity: 1,
+            measure: item.measure,
             shoppingItemId: item.id,
-            shoppingListId: shoppingListId
+            shoppingListId: shoppingListId,
+            category: item.category
         };
         setShoppingListItems(prev => [...prev, itemToAdd]);
     }
@@ -102,8 +125,7 @@ const ShoppingListForm = (): React.ReactNode => {
         return added;
     }
 
-    const submitForm = (): void => {
-        // chiamata metadati
+    const saveShoppingList = async (): Promise<string> => {
         const requestBody: ShoppingListRequest = {
             name: name,
             completedAt: null,
@@ -111,26 +133,101 @@ const ShoppingListForm = (): React.ReactNode => {
             status: status,
             notes: notes
         }
-
+        let listId: string;
         if (!shoppingListId) {
             // caso create
-            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists`, {
                 method: 'POST',
                 headers: {
                     "Authorization" : `Bearer ${token}`,
                     "Content-Type" : "application/json"
                 },
                 body: JSON.stringify(requestBody)
-            }).then(res => console.log(res));
+            })
+
+            const data = await response.json();
+            listId = data.id;
         } else {
             // caso edit
+            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingListId}`, {
+                method: 'PUT',
+                headers: {
+                    "Authorization" : `Bearer ${token}`,
+                    "Content-Type" : "application/json"
+                }, 
+                body: JSON.stringify(requestBody)
+            })
+            listId = shoppingListId;
         }
 
-        if (shoppingListItems.length) {
-            // POST 
-            
-        }
-        
+        return listId;
+    }
+
+    const saveShoppingItems = async (newListId: string): Promise<void> => {
+        console.log(newListId);
+        shoppingListItems.forEach(item => {
+            if (!item.id) {
+                const body: CreateListItemRequest = {
+                    quantity: item.quantity,
+                    itemId: item.shoppingItemId
+                }
+                // caso aggiunta nuova
+                fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${newListId}/items`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type" : "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body)
+                })
+            } else {
+                // caso edit
+                const body: UpdateListItemRequest = {
+                    added: item.added,
+                    quantity: item.quantity
+                }
+                fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${shoppingListId}/items/${item.shoppingItemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type" : "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body)
+                }).then(() => {
+                    const body: UpdateShoppingListItemRequest = {
+                        added: item.added,
+                        category: item.category,
+                        name: item.itemName,
+                        price: item.price,
+                        quantity: item.quantity,
+                        shoppingListId: shoppingListId
+                    }
+
+                    // put di tutti gli ITEM, potrebbero essere stati modificati (quando si cambiano nome e quantità)
+                    fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems/${item.shoppingItemId}`, {
+                        method: 'PUT',
+                        headers: {
+                            "Authorization" : `Bearer ${token}`,
+                            "Content-Type" : "application/json"
+                        }, 
+                        body: JSON.stringify(body)
+                    })
+                })
+            }
+        })   
+    }
+
+    const submitForm = async (): Promise<void> => {
+        // chiamata metadati
+        try {
+            const listId: string = await saveShoppingList();
+            console.log(listId);
+            await saveShoppingItems(listId);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            //caricamento
+        } 
     }
 
     useEffect(() => {
@@ -152,7 +249,7 @@ const ShoppingListForm = (): React.ReactNode => {
                 headers: {"Authorization" : `Bearer ${token}`}
             })
             .then(res => res.json())
-            .then(res => {setShoppingListItems(res.content)})
+            .then(res => {setShoppingListItems(res.content); console.log(res)})
         }
 
         // prende gli item aggiungibili alla lista

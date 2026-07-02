@@ -15,6 +15,7 @@ public class ShoppingListItemResponse {
     private String itemName;
     private String listName;
     private Float price;
+    private String category;
 
     public ShoppingListItemResponse(ShoppingListItem shoppingListItem) {
         ShoppingItem item = shoppingListItem.getShoppingItem();
@@ -27,6 +28,7 @@ public class ShoppingListItemResponse {
         this.quantity = shoppingListItem.getQuantity();
         this.added = shoppingListItem.getAdded();
         this.price = item.getPrice();
+        this.category = item.getCategory();
     }
 
     // getters and setters
@@ -53,4 +55,7 @@ public class ShoppingListItemResponse {
 
     public Float getPrice() { return price; }
     public void setPrice(Float price) { this.price = price; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }
