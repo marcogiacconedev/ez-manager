@@ -45,6 +45,15 @@ public class ShoppingListController {
         return ResponseEntity.ok(shoppingListService.getShoppingListsByUserId(UUID.fromString(userId), page, size));
     }
 
+    @GetMapping("/{shoppingListId}")
+    public ResponseEntity<ShoppingListResponse> getShoppingListById(
+        @PathVariable UUID shoppingListId,
+        @AuthenticationPrincipal String userId
+    ) {
+        ShoppingListResponse shoppingListResponse = shoppingListService.getShoppingListById(shoppingListId, UUID.fromString(userId));
+        return ResponseEntity.ok(shoppingListResponse); 
+    }
+
     @PostMapping
     public ResponseEntity<ShoppingListResponse> createShoppingList(
         @Valid @RequestBody CreateShoppingListRequest dto,

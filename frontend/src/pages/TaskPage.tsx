@@ -37,6 +37,7 @@ const TaskPage = (): React.ReactNode => {
             <Header
                 header="Task"
                 username={null}
+                isNavigationButtonVisible={true}
             ></Header>
             <div className="card-container">
                 <div className="card">

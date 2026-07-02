@@ -41,6 +41,7 @@ const HomePage = (): React.ReactNode => {
                 <Header
                     header="Hello,"
                     username={username}
+                    isNavigationButtonVisible={false}
                 ></Header>
                 <div className="card-container">
                     <h2 className="header-2">Task</h2>

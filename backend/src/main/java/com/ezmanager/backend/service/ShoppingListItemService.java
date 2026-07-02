@@ -15,7 +15,6 @@ import com.ezmanager.backend.repository.ShoppingItemRepository;
 import com.ezmanager.backend.repository.ShoppingListItemRepository;
 import com.ezmanager.backend.repository.ShoppingListRepository;
 
-import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class ShoppingListItemService {
@@ -49,15 +48,12 @@ public class ShoppingListItemService {
             throw new RuntimeException("L' item è gia in lista");
         }
 
-
         ShoppingListItem shoppingListItem = new ShoppingListItem();
         shoppingListItem.setShoppingList(shoppingList);
         shoppingListItem.setShoppingItem(shoppingItem);
         shoppingListItem.setAdded(false);
         shoppingListItem.setQuantity(dto.getQuantity());
-        
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.print(mapper.toString());
+
         return new ShoppingListItemResponse(shoppingListItemRepository.save(shoppingListItem));
     }
 
@@ -86,7 +82,7 @@ public class ShoppingListItemService {
         ShoppingListItem shoppingListItem = shoppingListItemRepository.findByShoppingListIdAndShoppingItemId(shoppingListId, shoppingItemId).orElseThrow(() -> new RuntimeException("Item non nella lista"));
         ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId).orElseThrow(() -> new RuntimeException("Lista inesistente"));
         if (!shoppingList.getUserId().equals(userId)) { throw new RuntimeException("Non autorizzato"); }
-        
+
         shoppingListItem.setAdded(dto.getAdded());
         shoppingListItem.setQuantity(dto.getQuantity());
         

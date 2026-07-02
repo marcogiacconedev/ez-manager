@@ -6,6 +6,7 @@ import TaskPage from './pages/TaskPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import HomePage from './pages/HomePage'
 import TaskForm from './pages/TaskForm'
+import ShoppingListForm from './pages/ShoppingListForm'
 
 function App() {
 
@@ -36,6 +37,16 @@ function App() {
         <Route path="/shopping" element={
           <ProtectedRoute>
             <ShoppingListPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/shopping/create/" element={
+          <ProtectedRoute>
+            <ShoppingListForm />
+          </ProtectedRoute>
+        } />
+        <Route path="/shopping/create/:shoppingListId" element={
+          <ProtectedRoute>
+            <ShoppingListForm />
           </ProtectedRoute>
         } />
         <Route path="*" element={<Navigate to="/home" replace />} />        

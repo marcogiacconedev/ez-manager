@@ -5,7 +5,7 @@ import Calendar from "../components/Calendar";
 import PriorityPicker from "../components/PriorityPicker";
 import Header from "../components/Header";
 
-export interface TaskRequestBody {
+export interface TaskRequest {
     name: string,
     description: string,
     date: Date,
@@ -50,7 +50,7 @@ const TaskForm = (): React.ReactNode => {
     }
         
     const submitForm = async (): Promise<void> => {
-        const requestBody: TaskRequestBody = {
+        const requestBody: TaskRequest = {
                 name: taskName,
                 description: description,
                 date: date ? date : new Date(),
@@ -59,7 +59,6 @@ const TaskForm = (): React.ReactNode => {
                 subtaskOf: null,
                 completedAt: completedAt
             }
-        console.log(requestBody, 'request body');
         const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
         const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;
         const method: string = taskId ? 'PUT' : 'POST';
@@ -87,6 +86,7 @@ const TaskForm = (): React.ReactNode => {
             <Header
                 header="Task"
                 username={null}
+                isNavigationButtonVisible={true}
             ></Header>
             <div className="card">
                 <input type="text" placeholder="name" className="form-input" value={taskName} onChange={e => {setTaskName(e.target.value)}}/>

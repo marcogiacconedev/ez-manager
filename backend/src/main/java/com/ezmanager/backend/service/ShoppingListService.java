@@ -28,6 +28,15 @@ public class ShoppingListService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return shoppingListRepository.findByUserId(userId, pageable).map(shoppingList -> new ShoppingListResponse(shoppingList));
     }
+
+    public ShoppingListResponse getShoppingListById(UUID shoppingListId, UUID userId) {
+        ShoppingList shoppingList = shoppingListRepository.findById(shoppingListId).orElseThrow(() -> new RuntimeException("Lista non trovata!"));
+        if (!shoppingList.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato");
+        }
+
+        return new ShoppingListResponse(shoppingList);
+    }
     
     public ShoppingListResponse createShoppingList(CreateShoppingListRequest dto, UUID userId) {
         ShoppingList shoppingList = new ShoppingList();

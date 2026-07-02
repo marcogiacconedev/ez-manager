@@ -1,11 +1,12 @@
 package com.ezmanager.backend.service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ezmanager.backend.dto.CreateShoppingItemRequest;
@@ -30,9 +31,12 @@ public class ShoppingItemService {
         this.shoppingListItemRepository = shoppingListItemRepository;
     }
 
-    public Page<ShoppingItemResponse> getShoppingItemsByShoppingListIda(int page, int size, UUID userId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return shoppingItemRepository.findByUserId(userId, pageable).map(shoppingItem -> new ShoppingItemResponse(shoppingItem));
+    public List<ShoppingItemResponse> getShoppingItemsByUserId(UUID userId) {
+        List<ShoppingItem> shoppingItems = shoppingItemRepository.findByUserId(userId);
+        
+        return shoppingItems.stream()
+        .map(item -> new ShoppingItemResponse(item))
+        .collect(Collectors.toList());
     }
 
     public Page<ShoppingListItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID shoppingListId) {
