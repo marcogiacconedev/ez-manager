@@ -2,36 +2,18 @@ package com.ezmanager.backend.dto;
 
 import java.util.UUID;
 
-import com.ezmanager.backend.model.ShoppingItem;
-import com.ezmanager.backend.model.ShoppingList;
-import com.ezmanager.backend.model.ShoppingListItem;
-
-public class ShoppingListItemResponse {
+public class ShoppingListItemRequest {
     private UUID id;
     private UUID shoppingListId;
     private UUID shoppingItemId;
-    private UUID userId;
     private Integer quantity;
     private Boolean added;
     private String itemName;
     private String listName;
     private Float price;
     private String category;
-
-    public ShoppingListItemResponse(ShoppingListItem shoppingListItem) {
-        ShoppingItem item = shoppingListItem.getShoppingItem();
-        ShoppingList list = shoppingListItem.getShoppingList();
-        this.id = shoppingListItem.getId();
-        this.shoppingListId = list.getId();
-        this.listName = list.getName();
-        this.shoppingItemId = item.getId();
-        this.itemName = item.getName();
-        this.quantity = shoppingListItem.getQuantity();
-        this.added = shoppingListItem.getAdded();
-        this.price = item.getPrice();
-        this.category = item.getCategory();
-        this.userId = list.getUserId();
-    }
+    private String measure;
+    private Float size;
 
     // getters and setters
     public UUID getId() { return id; }
@@ -61,6 +43,24 @@ public class ShoppingListItemResponse {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public UUID getUserId() { return userId; }
-    public void setUserId(UUID userId) { this.userId = userId; }
+    public String getMeasure() { return measure; }
+    public void setMeasure(String measure) { this.measure = measure; }
+
+    public Float getSize() { return size; }
+    public void setSize(Float size) { this.size = size; }
+
+    @Override
+    public String toString() {
+        return "ShoppingListItemRequest{" +
+                "id=" + id +
+                ", shoppingListId=" + shoppingListId +
+                ", shoppingItemId=" + shoppingItemId +
+                ", quantity=" + quantity +
+                ", added=" + added +
+                ", itemName='" + itemName + '\'' +
+                ", listName='" + listName + '\'' +
+                ", price=" + price +
+                ", category='" + category + '\'' +
+                '}';
+    }
 }

@@ -1,11 +1,12 @@
 package com.ezmanager.backend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.ezmanager.backend.dto.AddItemToListRequest;
+import com.ezmanager.backend.dto.ShoppingListItemRequest;
 import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingListItemRequest;
 import com.ezmanager.backend.model.ShoppingItem;
@@ -32,29 +33,48 @@ public class ShoppingListItemService {
         this.shoppingItemRepository = shoppingItemRepository;
     }
 
-    public ShoppingListItemResponse assignItemToList(AddItemToListRequest dto, UUID listId, UUID userId) {
+    public List<ShoppingListItemResponse> syncList(List<ShoppingListItemRequest> dtoList, UUID listId, UUID userId) {
+        //prende la lista
         ShoppingList shoppingList = shoppingListRepository.findById(listId)
             .orElseThrow(() -> new RuntimeException("Lista non trovata"));
-
-        ShoppingItem shoppingItem = shoppingItemRepository.findById(dto.getItemId())
-            .orElseThrow(() -> new RuntimeException("Item non trovato"));
-
-        if (!shoppingList.getUserId().equals(userId) || !shoppingItem.getUserId().equals(userId)) {
-            throw new RuntimeException("Non autorizzato!");
-        } 
-
-        Boolean itemAlreadyInList = shoppingListItemRepository.existsByShoppingListIdAndShoppingItemId(listId, dto.getItemId()); 
-        if (itemAlreadyInList) {
-            throw new RuntimeException("L' item è gia in lista");
+        if (!shoppingList.getUserId().equals(userId)) {
+            throw new RuntimeException("Non autorizzato");
         }
 
-        ShoppingListItem shoppingListItem = new ShoppingListItem();
-        shoppingListItem.setShoppingList(shoppingList);
-        shoppingListItem.setShoppingItem(shoppingItem);
-        shoppingListItem.setAdded(false);
-        shoppingListItem.setQuantity(dto.getQuantity());
+        List<ShoppingListItemResponse> responses = new ArrayList<>();
 
-        return new ShoppingListItemResponse(shoppingListItemRepository.save(shoppingListItem));
+        // per ogni oggetto nel body
+        dtoList.forEach(dto -> {
+            // iniziamo dagli items: dal dto prendo l' id dell' item e lo uso per prendere l' item. 
+            ShoppingItem shoppingItem = shoppingItemRepository.findById(dto.getShoppingItemId())
+                .orElseThrow(() -> new RuntimeException("Item non trovato"));
+            if (!shoppingItem.getUserId().equals(userId)) {
+                throw new RuntimeException("Non autorizzato");
+            }
+            // sostituisco le uniche 2 prop che si possono modificare da FE
+            shoppingItem.setName(dto.getItemName());
+            shoppingItem.setPrice(dto.getPrice());
+
+            // salvo
+            shoppingItemRepository.save(shoppingItem);
+
+            // shopping items lists: registriamo gli oggetti sulla lista
+            ShoppingListItem shoppingListItem = new ShoppingListItem();
+            if (dto.getId() != null) {
+                shoppingListItem = shoppingListItemRepository.findById(dto.getId()).orElse(null);
+            } else {
+                shoppingListItem.setShoppingList(shoppingList);
+                shoppingListItem.setShoppingItem(shoppingItem);
+            }
+            shoppingListItem.setAdded(dto.getAdded());
+            shoppingListItem.setQuantity(dto.getQuantity());
+            shoppingListItemRepository.save(shoppingListItem);
+            
+            //pushamo la response creata nella list 
+            ShoppingListItemResponse shoppingListItemResponse = new ShoppingListItemResponse(shoppingListItem);
+            responses.add(shoppingListItemResponse);
+        });
+        return responses;
     }
 
     public void deleteAllItemsInList(UUID shoppingListId, UUID userId) {

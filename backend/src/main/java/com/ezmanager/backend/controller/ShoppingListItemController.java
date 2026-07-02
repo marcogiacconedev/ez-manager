@@ -1,5 +1,6 @@
 package com.ezmanager.backend.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ezmanager.backend.dto.AddItemToListRequest;
+import com.ezmanager.backend.dto.ShoppingListItemRequest;
 import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingListItemRequest;
 import com.ezmanager.backend.service.ShoppingItemService;
@@ -51,13 +52,13 @@ public class ShoppingListItemController {
     }
 
     @PostMapping("/{shoppingListId}/items")
-    public ResponseEntity<ShoppingListItemResponse> addItemToList(
+    public ResponseEntity<List<ShoppingListItemResponse>> syncList(
         @PathVariable UUID shoppingListId,
-        @Valid @RequestBody AddItemToListRequest dto,
+        @Valid @RequestBody List<ShoppingListItemRequest> dtoList,
         @AuthenticationPrincipal String userId
     ) {
-        ShoppingListItemResponse created = shoppingListItemService.assignItemToList(dto, shoppingListId, UUID.fromString(userId));
-        return ResponseEntity.ok(created);
+        List<ShoppingListItemResponse> list = shoppingListItemService.syncList(dtoList, shoppingListId, UUID.fromString(userId));
+        return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/{shoppingListId}/items")
