@@ -1,8 +1,10 @@
 package com.ezmanager.backend.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -35,11 +37,18 @@ public class ShoppingListItemService {
 
     public List<ShoppingListItemResponse> syncList(List<ShoppingListItemRequest> dtoList, UUID listId, UUID userId) {
         //prende la lista
-        ShoppingList shoppingList = shoppingListRepository.findById(listId)
-            .orElseThrow(() -> new RuntimeException("Lista non trovata"));
+        ShoppingList shoppingList = shoppingListRepository.findById(listId).orElse(null);
         if (!shoppingList.getUserId().equals(userId)) {
             throw new RuntimeException("Non autorizzato");
         }
+
+        shoppingList.setName(shoppingList.getName());
+        shoppingList.setUserId(userId);
+        shoppingList.setCreatedAt(LocalDateTime.now());
+        shoppingList.setStatus("PENDING");
+        shoppingList.setNotes(shoppingList.getNotes());
+
+        shoppingListRepository.save(shoppingList);
 
         List<ShoppingListItemResponse> responses = new ArrayList<>();
 
@@ -74,6 +83,24 @@ public class ShoppingListItemService {
             ShoppingListItemResponse shoppingListItemResponse = new ShoppingListItemResponse(shoppingListItem);
             responses.add(shoppingListItemResponse);
         });
+
+        List<ShoppingListItem> shoppingListItems = shoppingListItemRepository.findByShoppingListId(listId);
+
+        if (responses.isEmpty()) {
+            // nessun item rimasto: cancella tutto in un colpo solo
+            shoppingListItemRepository.deleteAllInBatch(shoppingListItems);
+        } else {
+            // cancella solo gli item non più presenti nella risposta
+            List<ShoppingListItem> toDelete = shoppingListItems.stream()
+                    .filter(item -> responses.stream()
+                            .noneMatch(response -> item.getId().equals(response.getId())))
+                    .collect(Collectors.toList());
+
+            if (!toDelete.isEmpty()) {
+                shoppingListItemRepository.deleteAllInBatch(toDelete); // batch anche qui, invece di N delete singole
+            }
+        }
+
         return responses;
     }
 

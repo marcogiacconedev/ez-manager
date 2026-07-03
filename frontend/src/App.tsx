@@ -44,7 +44,7 @@ function App() {
             <ShoppingListForm />
           </ProtectedRoute>
         } />
-        <Route path="/shopping/create/:shoppingListId" element={
+        <Route path="/shopping/create/:shoppingListIdFromUrl" element={
           <ProtectedRoute>
             <ShoppingListForm />
           </ProtectedRoute>

@@ -28,10 +28,14 @@ export interface ShoppingListItem {
 export interface UpdateShoppingListItemRequest {
     added: boolean,
     category: string,
-    name: string,
+    id: string | undefined,
+    itemName: string,
+    listName: string,
     price?: number,
     quantity: number,
-    shoppingListId?: string
+    shoppingListId?: string,
+    shoppingItemId: string,
+    notes: string
 }
 
 export interface Item {
@@ -55,7 +59,8 @@ export interface UpdateListItemRequest {
 }
 
 const ShoppingListForm = (): React.ReactNode => {
-    let { shoppingListId } = useParams<{ shoppingListId: string }>();
+    let { shoppingListIdFromUrl } = useParams<{ shoppingListIdFromUrl: string }>();
+    const [shoppingListId, setShoppingListId] = useState<string>('');
     const token = useAuthStore.getState().token;
     const [name, setName] = useState<string>('');
     const [status, setStatus] = useState<string>('PENDING');
@@ -67,6 +72,41 @@ const ShoppingListForm = (): React.ReactNode => {
     const [isAddItemsOpen, setIsAddItemsOpen] = useState<boolean>(false);
     const [availableItems, setAvailableItems] = useState<Item[]>([]);
     const [filteredAvailableItems, setFilteredAvailableItems] = useState<Item[]>([]);
+
+    useEffect(() => {
+        
+        // se siamo in modalita edit prende i metadati della lista
+        if (shoppingListIdFromUrl) {
+            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingListIdFromUrl}`, {
+                headers: { "Authorization": `Bearer ${token}`}
+
+            })
+            .then(res => res.json())
+            .then(res => {
+                setName(res.name);
+                setStatus(res.status);
+                setNotes(res.notes);
+                setShoppingListId(res.id);
+            })
+
+            // prende gli item aggiunti in lista
+            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${shoppingListIdFromUrl}/items`, {
+                headers: {"Authorization" : `Bearer ${token}`}
+            })
+            .then(res => res.json())
+            .then(res => {setShoppingListItems(res.content); console.log(res)})
+        }
+
+        // prende gli item aggiungibili alla lista
+        fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems`, {
+            headers: { "Authorization" : `Bearer ${token}`}
+        })
+        .then(res => res.json())
+        .then(res => {
+            setAvailableItems(res);
+            setFilteredAvailableItems(res);
+        })
+    }, [])
 
     const updateItem = (index: number, field: keyof typeof shoppingListItems[number], value: string | number | boolean) => {
         setShoppingListItems(prev =>
@@ -86,7 +126,7 @@ const ShoppingListForm = (): React.ReactNode => {
             quantity: 1,
             measure: item.measure,
             shoppingItemId: item.id,
-            shoppingListId: shoppingListId,
+            shoppingListId: shoppingListIdFromUrl,
             category: item.category
         };
         setShoppingListItems(prev => [...prev, itemToAdd]);
@@ -125,143 +165,73 @@ const ShoppingListForm = (): React.ReactNode => {
         return added;
     }
 
-    const saveShoppingList = async (): Promise<string> => {
-        const requestBody: ShoppingListRequest = {
-            name: name,
-            completedAt: null,
-            createdAt: new Date(),
-            status: status,
-            notes: notes
-        }
-        let listId: string;
-        if (!shoppingListId) {
-            // caso create
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists`, {
-                method: 'POST',
-                headers: {
-                    "Authorization" : `Bearer ${token}`,
-                    "Content-Type" : "application/json"
-                },
-                body: JSON.stringify(requestBody)
+    const createNewList = async (): Promise<string> => {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: name,
+                completedAt: null,
+                createdAt: new Date(),
+                status: 'PENDING',
+                notes: notes
             })
+        });
 
-            const data = await response.json();
-            listId = data.id;
-        } else {
-            // caso edit
-            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingListId}`, {
-                method: 'PUT',
-                headers: {
-                    "Authorization" : `Bearer ${token}`,
-                    "Content-Type" : "application/json"
-                }, 
-                body: JSON.stringify(requestBody)
-            })
-            listId = shoppingListId;
+        if (!response.ok) {
+            throw new Error("Errore nella creazione della lista");
         }
 
-        return listId;
-    }
-
-    const saveShoppingItems = async (newListId: string): Promise<void> => {
-        console.log(newListId);
-        shoppingListItems.forEach(item => {
-            if (!item.id) {
-                const body: CreateListItemRequest = {
-                    quantity: item.quantity,
-                    itemId: item.shoppingItemId
-                }
-                // caso aggiunta nuova
-                fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${newListId}/items`, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type" : "application/json",
-                        "Authorization" : `Bearer ${token}`
-                    },
-                    body: JSON.stringify(body)
-                })
-            } else {
-                // caso edit
-                const body: UpdateListItemRequest = {
-                    added: item.added,
-                    quantity: item.quantity
-                }
-                fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${shoppingListId}/items/${item.shoppingItemId}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type" : "application/json",
-                        "Authorization" : `Bearer ${token}`
-                    },
-                    body: JSON.stringify(body)
-                }).then(() => {
-                    const body: UpdateShoppingListItemRequest = {
-                        added: item.added,
-                        category: item.category,
-                        name: item.itemName,
-                        price: item.price,
-                        quantity: item.quantity,
-                        shoppingListId: shoppingListId
-                    }
-
-                    // put di tutti gli ITEM, potrebbero essere stati modificati (quando si cambiano nome e quantità)
-                    fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems/${item.shoppingItemId}`, {
-                        method: 'PUT',
-                        headers: {
-                            "Authorization" : `Bearer ${token}`,
-                            "Content-Type" : "application/json"
-                        }, 
-                        body: JSON.stringify(body)
-                    })
-                })
-            }
-        })   
+        const data = await response.json();
+        return data.id;    
     }
 
     const submitForm = async (): Promise<void> => {
-        // chiamata metadati
         try {
-            const listId: string = await saveShoppingList();
-            console.log(listId);
-            await saveShoppingItems(listId);
+            let newShoppingListId: string = '';
+            if (!shoppingListId) {
+                newShoppingListId = await createNewList();
+            } else {
+                newShoppingListId = shoppingListId;
+            }
+            // ora costruisci il body USANDO currentListId, non shoppingListId dello state
+            const requestBody: UpdateShoppingListItemRequest[] = shoppingListItems.map(item => ({
+                added: item.added,
+                category: item.category,
+                id: item.id,
+                itemName: item.itemName,
+                listName: name,
+                price: item.price,
+                quantity: item.quantity,
+                shoppingItemId: item.shoppingItemId,
+                shoppingListId: newShoppingListId,  
+                notes: notes
+            }));
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${newShoppingListId}/items`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error("Errore nella chiamata api");
+            }
+
+            const data = await response.json();
+            console.log(data);
         } catch (error) {
             console.log(error);
         } finally {
-            //caricamento
-        } 
-    }
-
-    useEffect(() => {
-        // se siamo in modalita edit prende i metadati della lista
-        if (shoppingListId) {
-            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingListId}`, {
-                headers: { "Authorization": `Bearer ${token}`}
-
-            })
-            .then(res => res.json())
-            .then(res => {
-                setName(res.name);
-                setStatus(res.status);
-                setNotes(res.notes);
-            })
-
-            // prende gli item aggiunti in lista
-            fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${shoppingListId}/items`, {
-                headers: {"Authorization" : `Bearer ${token}`}
-            })
-            .then(res => res.json())
-            .then(res => {setShoppingListItems(res.content); console.log(res)})
+            // caricamento
         }
-
-        // prende gli item aggiungibili alla lista
-        fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems`, {
-            headers: { "Authorization" : `Bearer ${token}`}
-        })
-        .then(res => res.json())
-        .then(res => {
-            setAvailableItems(res);
-            setFilteredAvailableItems(res);
-        })
-    }, [])
+    };
 
     return (
         <>

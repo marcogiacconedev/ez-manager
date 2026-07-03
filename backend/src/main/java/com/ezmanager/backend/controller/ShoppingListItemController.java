@@ -21,6 +21,7 @@ import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingListItemRequest;
 import com.ezmanager.backend.service.ShoppingItemService;
 import com.ezmanager.backend.service.ShoppingListItemService;
+import com.ezmanager.backend.service.ShoppingListService;
 
 import jakarta.validation.Valid;
 
@@ -34,7 +35,8 @@ public class ShoppingListItemController {
 
     public ShoppingListItemController(
         ShoppingListItemService shoppingListItemService,
-        ShoppingItemService shoppingItemService
+        ShoppingItemService shoppingItemService,
+        ShoppingListService shoppingListService
     ) {
         this.shoppingListItemService = shoppingListItemService;
         this.shoppingItemService = shoppingItemService;

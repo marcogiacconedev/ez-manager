@@ -14,6 +14,7 @@ public class ShoppingListItemRequest {
     private String category;
     private String measure;
     private Float size;
+    private String notes;
 
     // getters and setters
     public UUID getId() { return id; }
@@ -49,18 +50,6 @@ public class ShoppingListItemRequest {
     public Float getSize() { return size; }
     public void setSize(Float size) { this.size = size; }
 
-    @Override
-    public String toString() {
-        return "ShoppingListItemRequest{" +
-                "id=" + id +
-                ", shoppingListId=" + shoppingListId +
-                ", shoppingItemId=" + shoppingItemId +
-                ", quantity=" + quantity +
-                ", added=" + added +
-                ", itemName='" + itemName + '\'' +
-                ", listName='" + listName + '\'' +
-                ", price=" + price +
-                ", category='" + category + '\'' +
-                '}';
-    }
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 }
