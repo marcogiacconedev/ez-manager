@@ -1,9 +1,11 @@
 package com.ezmanager.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
 
 public class CreateShoppingItemRequest {
-    private String category;
+    @NotBlank(message = "Il nome dell item è obbligatorio")
     private String name;
+    private String category;
     private Float price;
     private Float size;
     private String measure;

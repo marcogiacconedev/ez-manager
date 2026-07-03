@@ -75,6 +75,7 @@ const HomePage = (): React.ReactNode => {
                             <>
                                 <button className="home-button" onClick={() => navigate('/tasks')}>Task</button>
                                 <button className="home-button" onClick={() => navigate('/shopping')}>Shopping List</button>
+                                <button className="home-button" onClick={() => navigate('/items')}>Shopping Items</button>
                                 <button className="home-button">Metrics</button>                            
                             </>
                         )}

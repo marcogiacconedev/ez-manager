@@ -64,8 +64,8 @@ const TaskPage = (): React.ReactNode => {
                     </div>
                     <div className="add-button-container">
                         <AddButton
-                        url={'/tasks/create'}
-                        text={'Create new'}
+                            url={'/tasks/create'}
+                            text={'Create new'}
                         ></AddButton>     
                     </div>
                 </div>           

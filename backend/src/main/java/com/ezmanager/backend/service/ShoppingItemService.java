@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ezmanager.backend.dto.CreateShoppingItemRequest;
@@ -31,12 +32,23 @@ public class ShoppingItemService {
         this.shoppingListItemRepository = shoppingListItemRepository;
     }
 
-    public List<ShoppingItemResponse> getShoppingItemsByUserId(UUID userId) {
+    public List<ShoppingItemResponse> getAllShoppingItemsByUserId(UUID userId) {
         List<ShoppingItem> shoppingItems = shoppingItemRepository.findByUserId(userId);
         
         return shoppingItems.stream()
         .map(item -> new ShoppingItemResponse(item))
         .collect(Collectors.toList());
+    }
+
+    public Page<ShoppingItemResponse> getShoppingItemsByUserId(UUID userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").descending());
+        return shoppingItemRepository.findByUserId(userId, pageable).map(ShoppingItemResponse::new);
+    }
+
+    public ShoppingItemResponse getShoppingItemById(UUID itemId, UUID userId) {
+        ShoppingItem shoppingItem = shoppingItemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item non trovato"));
+        if (!shoppingItem.getUserId().equals(userId)) throw new RuntimeException("Non autorizzato");
+        return new ShoppingItemResponse(shoppingItem);        
     }
 
     public Page<ShoppingListItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID shoppingListId) {

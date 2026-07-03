@@ -96,7 +96,7 @@ const ShoppingListForm = (): React.ReactNode => {
             .then(res => {setShoppingListItems(res.content); console.log(res)})
         }
         // prende gli item aggiungibili alla lista
-        fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems`, {
+        fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems/all`, {
             headers: { "Authorization" : `Bearer ${token}`}
         })
         .then(res => res.json())
@@ -335,7 +335,7 @@ const ShoppingListForm = (): React.ReactNode => {
                             </thead>
                             <tbody>
                                 { filteredAvailableItems.map(item => (
-                                    <tr key={item.id} className="table-row list-item">
+                                    <tr key={item.id} className="table-row list-item ">
                                         <td>{item.name}</td>
                                         <td>{item.price}</td>
                                         <td>{item.category}</td>
