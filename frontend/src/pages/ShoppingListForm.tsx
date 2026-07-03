@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import DropdownButton from "../components/DropdownButton";
+import EmptyListRow from "../components/EmptyListRow";
 
 export interface ShoppingListRequest {
     name: string,
@@ -79,7 +80,6 @@ const ShoppingListForm = (): React.ReactNode => {
         if (shoppingListIdFromUrl) {
             fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingListIdFromUrl}`, {
                 headers: { "Authorization": `Bearer ${token}`}
-
             })
             .then(res => res.json())
             .then(res => {
@@ -88,7 +88,6 @@ const ShoppingListForm = (): React.ReactNode => {
                 setNotes(res.notes);
                 setShoppingListId(res.id);
             })
-
             // prende gli item aggiunti in lista
             fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${shoppingListIdFromUrl}/items`, {
                 headers: {"Authorization" : `Bearer ${token}`}
@@ -96,7 +95,6 @@ const ShoppingListForm = (): React.ReactNode => {
             .then(res => res.json())
             .then(res => {setShoppingListItems(res.content); console.log(res)})
         }
-
         // prende gli item aggiungibili alla lista
         fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems`, {
             headers: { "Authorization" : `Bearer ${token}`}
@@ -245,68 +243,81 @@ const ShoppingListForm = (): React.ReactNode => {
                 <DropdownButton
                     header="items"
                     dropdownOpen={isListOpen}
-                    onOpen={() => {setIsListOpen(!isListOpen)}}
+                    onOpen={() => setIsListOpen(!isListOpen)}
+                    marginTop="1.5rem"
+                    marginBottom="0"
                 ></DropdownButton>
-                {isListOpen && 
-                    <table>
-                        <thead>
-                            <tr className="table-row">
-                                <td className="shopping-item-name table-header-item">Name</td>
-                                <td className="shopping-item-price table-header-item">P</td>
-                                <td className="shopping-item-quantity table-header-item">Q</td>
-                                <td className="shopping-item-added table-header-item">A</td>
-                                <td></td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {shoppingListItems.map((item, index) => (
-                                <tr className="table-row list-item" key={item.shoppingItemId}>
-                                    <td className="table-item">
-                                        <input
-                                            type="text"
-                                            className="shopping-item-name-input"
-                                            value={item.itemName}
-                                            onChange={e => updateItem(index, 'itemName', e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="table-item">
-                                        <input
-                                            className="shopping-item-price-input"
-                                            type="text"
-                                            value={item.price}
-                                            onChange={e => updateItem(index, 'price', e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="table-item">
-                                        <input
-                                            className="shopping-item-quantity-input"
-                                            type="text"
-                                            value={item.quantity}
-                                            onChange={e => updateItem(index, 'quantity', e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="table-item">
-                                        <input
-                                            className="shopping-item-added-input"
-                                            type="checkbox"
-                                            checked={item.added}
-                                            onChange={e => updateItem(index, 'added', e.target.checked)}
-                                        />
-                                    </td>
-                                    <td className="table-item">
-                                        <button className="add-item-button" onClick={() => removeItemFromList(item)}>-</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                }
+                {isListOpen && (
+                    <>
+                            <EmptyListRow
+                                isRowVisible={shoppingListItems.length < 1}
+                                text="Add some items ♫ ♪"
+                            ></EmptyListRow>                    
+                        <table>
+                            { shoppingListItems.length > 0 && (
+                                <>
+                                    <thead>
+                                        <tr className="table-row">
+                                            <td className="shopping-item-name table-header-item">Name</td>
+                                            <td className="shopping-item-price table-header-item">P</td>
+                                            <td className="shopping-item-quantity table-header-item">Q</td>
+                                            <td className="shopping-item-added table-header-item">A</td>
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        { shoppingListItems.map((item, index) => (
+                                            <tr className="table-row list-item" key={item.shoppingItemId}>
+                                                <td className="table-item">
+                                                    <input
+                                                        type="text"
+                                                        className="shopping-item-name-input"
+                                                        value={item.itemName}
+                                                        onChange={e => updateItem(index, 'itemName', e.target.value)}
+                                                    />
+                                                </td>
+                                                <td className="table-item">
+                                                    <input
+                                                        className="shopping-item-price-input"
+                                                        type="text"
+                                                        value={item.price}
+                                                        onChange={e => updateItem(index, 'price', e.target.value)}
+                                                    />
+                                                </td>
+                                                <td className="table-item">
+                                                    <input
+                                                        className="shopping-item-quantity-input"
+                                                        type="text"
+                                                        value={item.quantity}
+                                                        onChange={e => updateItem(index, 'quantity', e.target.value)}
+                                                    />
+                                                </td>
+                                                <td className="table-item">
+                                                    <input
+                                                        className="shopping-item-added-input"
+                                                        type="checkbox"
+                                                        checked={item.added}
+                                                        onChange={e => updateItem(index, 'added', e.target.checked)}
+                                                    />
+                                                </td>
+                                                <td className="table-item">
+                                                    <button className="add-item-button" onClick={() => removeItemFromList(item)}>-</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>                                                        
+                                </>
+                            )}
+                        </table>                    
+                    </>
+                )}
 
-                <hr className="shoppinglist-line"/>
                 <DropdownButton
                     header="add items"
                     dropdownOpen={isAddItemsOpen}
                     onOpen={() => {setIsAddItemsOpen(!isAddItemsOpen)}}
+                    marginTop="1.5rem"
+                    marginBottom="0"                    
                 ></DropdownButton>
                 {isAddItemsOpen && (
                     <>
@@ -336,18 +347,17 @@ const ShoppingListForm = (): React.ReactNode => {
                             </tbody>                                 
                         </table>              
                     </>
-                )}
-                <hr className="shoppinglist-line"/>
-                
+                )}                
                 <DropdownButton
                     header="notes"
                     dropdownOpen={isNotesDropdownOpen}
                     onOpen={() => setIsNotesDropdownOpen(!isNotesDropdownOpen)}
+                    marginTop="1.5rem"
+                    marginBottom="0"                    
                 ></DropdownButton>
                 {isNotesDropdownOpen &&
                     <textarea name="notes" id="notes" placeholder="notes" className="form-textarea" value={notes} onChange={e => {setNotes(e.target.value)}}></textarea>            
                 }
-
                 <div className="submit-form-container">
                     <button className="submit-form-button" onClick={submitForm}>{shoppingListId ? 'Apply Changes' : 'Submit'}</button>
                     { error && 

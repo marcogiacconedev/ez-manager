@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DropdownButton from "../components/DropdownButton";
 import AddButton from "../components/AddButton";
 import Header from "../components/Header";
+import EmptyListRow from "../components/EmptyListRow";
 
 const TaskPage = (): React.ReactNode => {
     const [page, setPage] = useState<number>(0);
@@ -41,6 +42,10 @@ const TaskPage = (): React.ReactNode => {
             ></Header>
             <div className="card-container">
                 <div className="card">
+                    <EmptyListRow
+                        isRowVisible={tasks.length < 1}
+                        text={'No tasks found ♫ ♪'}
+                    ></EmptyListRow>                    
                     {
                         tasks.map((task) => (
                         <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
@@ -69,6 +74,8 @@ const TaskPage = (): React.ReactNode => {
                     header={'Date'}
                     onOpen={toggleCalendarDropdown}
                     dropdownOpen={calendarOpen}
+                    marginTop="0"
+                    marginBottom="0"                    
                     ></DropdownButton>
                     {calendarOpen && (
                         <>

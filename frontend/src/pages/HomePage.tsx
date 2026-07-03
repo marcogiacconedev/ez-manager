@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DropdownButton from "../components/DropdownButton";
 import { useState } from "react";
 import Header from "../components/Header";
+import EmptyListRow from "../components/EmptyListRow";
 
 export interface Task {
     id: string,
@@ -46,8 +47,11 @@ const HomePage = (): React.ReactNode => {
                 <div className="card-container">
                     <h2 className="header-2">Task</h2>
                     <div className="card">
-                        {
-                            tasks.map((task) => (
+                        <EmptyListRow
+                            isRowVisible={tasks.length < 1}
+                            text={'No tasks found ♫ ♪​'}
+                        ></EmptyListRow>
+                        { tasks.map((task) => (
                             <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
                                 <div className={`task-completed-led ${task.completedAt ? 'completed' : ''}`}></div>
                                 <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
@@ -55,8 +59,7 @@ const HomePage = (): React.ReactNode => {
                                 <p className="task-display-item task-description">▻ {task.description}</p>
                                 <hr className="task-line"/>
                             </div>
-                            ))
-                        }
+                        ))}
                     </div>
                 </div>
                 <div className="card-container">
@@ -65,6 +68,8 @@ const HomePage = (): React.ReactNode => {
                             header={'Sections'}
                             onOpen={() => {setIsSectionsDropdownOpen(!isSectionsDropdownOpen)}}
                             dropdownOpen={isSectionsDropdownOpen}
+                            marginTop="0"
+                            marginBottom="0"                            
                         ></DropdownButton>
                         {isSectionsDropdownOpen && (
                             <>
@@ -81,6 +86,8 @@ const HomePage = (): React.ReactNode => {
                             header={'Alerts'}
                             onOpen={() => setisAlertsDropdownOpen(!isAlertsDropdownOpen)}
                             dropdownOpen={isAlertsDropdownOpen}
+                            marginTop="0"
+                            marginBottom="0"                            
                         ></DropdownButton>
                     </div>
                 </div>

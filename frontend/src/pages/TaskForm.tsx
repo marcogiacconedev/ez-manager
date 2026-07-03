@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import Calendar from "../components/Calendar";
-import PriorityPicker from "../components/PriorityPicker";
 import Header from "../components/Header";
+import DropdownButton from "../components/DropdownButton";
 
 export interface TaskRequest {
     name: string,
@@ -23,6 +23,9 @@ const TaskForm = (): React.ReactNode => {
     const [description, setDescription] = useState<string>("");
     const [taskName, setTaskName] = useState<string>("");
     const [priority, setPriority] = useState<number>(1);
+    const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState<boolean>(false);
+    const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
+
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
 
@@ -91,15 +94,42 @@ const TaskForm = (): React.ReactNode => {
             <div className="card">
                 <input type="text" placeholder="name" className="form-input" value={taskName} onChange={e => {setTaskName(e.target.value)}}/>
                 <textarea name="description" id="description" placeholder="description" className="form-textarea" value={description} onChange={e => {setDescription(e.target.value)}}></textarea>
-                <hr className="task-line"/>
-                <Calendar
-                    selectedDate={date}
-                    onSelectDate={onSelectDate}
-                />
-                <PriorityPicker
-                    onSelect={(value) => setPriority(value)}
-                    priority={priority}
-                ></PriorityPicker>
+                <DropdownButton
+                    header={'Calendar'}
+                    onOpen={() => setIsCalendarOpen(!isCalendarOpen)}
+                    dropdownOpen={isCalendarOpen}
+                    marginTop="1.5rem"
+                    marginBottom="0"                    
+                ></DropdownButton>
+                {isCalendarOpen && (
+                    <Calendar
+                        selectedDate={date}
+                        onSelectDate={onSelectDate}
+                    />
+                )}
+                <DropdownButton
+                    header={'Priority'}
+                    onOpen={() => setIsPriorityDropdownOpen(!isPriorityDropdownOpen)}
+                    dropdownOpen={isPriorityDropdownOpen}
+                    marginTop="1.5rem"
+                    marginBottom={isPriorityDropdownOpen ? "0rem" : "1.5rem"}                    
+                ></DropdownButton>
+                {isPriorityDropdownOpen && (
+                    <>
+                    <div className="prio-row-container">
+                        <button className="home-button" onClick={() => setPriority(1)}>1</button>
+                        {priority === 1 && (<span className="prio-row-tick">✓</span>)}                
+                    </div>
+                    <div className="prio-row-container">
+                        <button className="home-button" onClick={() => setPriority(2)}>2</button>
+                        {priority === 2 && (<span className="prio-row-tick">✓</span>)}
+                    </div>
+                    <div className="prio-row-container">
+                        <button className="home-button" onClick={() => setPriority(3)}>3</button>                            
+                        {priority === 3 && (<span className="prio-row-tick">✓</span>)}
+                    </div>
+                    </>
+                )}
                 <div className="submit-form-container">
                     <button 
                         className={`mark-as-done-button ${completedAt ? 'done' : ''}`}

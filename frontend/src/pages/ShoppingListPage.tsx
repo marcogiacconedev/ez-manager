@@ -3,6 +3,7 @@ import AddButton from "../components/AddButton";
 import Header from "../components/Header";
 import useShoppingListApi from "../hooks/useShoppingListApi";
 import { useNavigate } from "react-router-dom";
+import EmptyListRow from "../components/EmptyListRow";
 
 const ShoppingListPage = (): React.ReactNode => {
     const [page, setPage] = useState<number>(0);
@@ -26,6 +27,10 @@ const ShoppingListPage = (): React.ReactNode => {
             ></Header>
             <div className="card-container">
                 <div className="card">
+                    <EmptyListRow
+                        isRowVisible={shoppingLists.length < 1}
+                        text={'No tasks found ♫ ♪'}
+                    ></EmptyListRow>                    
                     {
                         shoppingLists.map((shoppinglist) => (
                         <div key={shoppinglist.id} className="shoppinglist-display-row" onClick={() => navigate(`/shopping/create/${shoppinglist.id}`)}>
@@ -42,8 +47,8 @@ const ShoppingListPage = (): React.ReactNode => {
                     </div>
                     <div className="add-button-container">
                         <AddButton
-                        url={'/shopping/create'}
-                        text={'Create new'}
+                            url={'/shopping/create'}
+                            text={'Create new'}
                         ></AddButton>     
                     </div>
                 </div>
