@@ -37,17 +37,18 @@ public class ShoppingListItemService {
 
     public List<ShoppingListItemResponse> syncList(List<ShoppingListItemRequest> dtoList, UUID listId, UUID userId) {
         //prende la lista
-        ShoppingList shoppingList = shoppingListRepository.findById(listId).orElse(null);
+        ShoppingList shoppingList = shoppingListRepository.findById(listId).orElseThrow(() -> new RuntimeException("Lista non trovata"));
         if (!shoppingList.getUserId().equals(userId)) {
             throw new RuntimeException("Non autorizzato");
         }
 
-        shoppingList.setName(shoppingList.getName());
-        shoppingList.setUserId(userId);
-        shoppingList.setCreatedAt(LocalDateTime.now());
-        shoppingList.setStatus("PENDING");
-        shoppingList.setNotes(shoppingList.getNotes());
-
+        if (!dtoList.isEmpty()) {
+            shoppingList.setName(dtoList.get(0).getListName());
+            shoppingList.setUserId(userId);
+            shoppingList.setCreatedAt(LocalDateTime.now());
+            shoppingList.setStatus("PENDING");
+            shoppingList.setNotes(dtoList.get(0).getNotes());
+        }
         shoppingListRepository.save(shoppingList);
 
         List<ShoppingListItemResponse> responses = new ArrayList<>();

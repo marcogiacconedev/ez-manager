@@ -60,7 +60,7 @@ export interface UpdateListItemRequest {
 }
 
 const ShoppingListForm = (): React.ReactNode => {
-    let { shoppingListIdFromUrl } = useParams<{ shoppingListIdFromUrl: string }>();
+    const { shoppingListIdFromUrl } = useParams<{ shoppingListIdFromUrl: string }>();
     const [shoppingListId, setShoppingListId] = useState<string>('');
     const token = useAuthStore.getState().token;
     const [name, setName] = useState<string>('');
@@ -75,7 +75,6 @@ const ShoppingListForm = (): React.ReactNode => {
     const [filteredAvailableItems, setFilteredAvailableItems] = useState<Item[]>([]);
 
     useEffect(() => {
-        
         // se siamo in modalita edit prende i metadati della lista
         if (shoppingListIdFromUrl) {
             fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingListIdFromUrl}`, {
@@ -189,6 +188,7 @@ const ShoppingListForm = (): React.ReactNode => {
 
     const submitForm = async (): Promise<void> => {
         try {
+            console.log(shoppingListId);
             let newShoppingListId: string = '';
             if (!shoppingListId) {
                 newShoppingListId = await createNewList();
@@ -335,7 +335,7 @@ const ShoppingListForm = (): React.ReactNode => {
                             </thead>
                             <tbody>
                                 { filteredAvailableItems.map(item => (
-                                    <tr key={item.id} className="table-row list-item ">
+                                    <tr key={item.id} className="table-row list-item">
                                         <td>{item.name}</td>
                                         <td>{item.price}</td>
                                         <td>{item.category}</td>
