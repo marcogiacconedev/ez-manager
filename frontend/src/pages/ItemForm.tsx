@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 const ItemForm = () : React.ReactNode => {
@@ -13,6 +13,7 @@ const ItemForm = () : React.ReactNode => {
     const [size, setSize] = useState<number>();
     const [measure, setMeasure] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const navigate = useNavigate();
 
     const getFormData = (): void => {
         fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems/${itemIdFromUrl}`, {
@@ -102,6 +103,7 @@ const ItemForm = () : React.ReactNode => {
 
     const submitForm = async (): Promise<void> => {
         if (itemId) { updateItem() } else { createNewItem() }
+        navigate('/items');
     }
 
     return (

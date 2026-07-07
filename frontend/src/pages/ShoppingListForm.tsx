@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import DropdownButton from "../components/DropdownButton";
 import EmptyListRow from "../components/EmptyListRow";
@@ -73,6 +73,7 @@ const ShoppingListForm = (): React.ReactNode => {
     const [isAddItemsOpen, setIsAddItemsOpen] = useState<boolean>(false);
     const [availableItems, setAvailableItems] = useState<Item[]>([]);
     const [filteredAvailableItems, setFilteredAvailableItems] = useState<Item[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // se siamo in modalita edit prende i metadati della lista
@@ -173,7 +174,7 @@ const ShoppingListForm = (): React.ReactNode => {
                 name: name,
                 completedAt: null,
                 createdAt: new Date(),
-                status: 'PENDING',
+                status: status,
                 notes: notes
             })
         });
@@ -188,14 +189,13 @@ const ShoppingListForm = (): React.ReactNode => {
 
     const submitForm = async (): Promise<void> => {
         try {
-            console.log(shoppingListId);
             let newShoppingListId: string = '';
             if (!shoppingListId) {
                 newShoppingListId = await createNewList();
             } else {
                 newShoppingListId = shoppingListId;
             }
-            // ora costruisci il body USANDO currentListId, non shoppingListId dello state
+            // costruisce il body USANDO currentListId
             const requestBody: UpdateShoppingListItemRequest[] = shoppingListItems.map(item => ({
                 added: item.added,
                 category: item.category,
@@ -226,8 +226,10 @@ const ShoppingListForm = (): React.ReactNode => {
             console.log(data);
         } catch (error) {
             console.log(error);
+            setError('An error occurred');
         } finally {
             // caricamento
+            navigate('/shopping');
         }
     };
 
@@ -311,7 +313,6 @@ const ShoppingListForm = (): React.ReactNode => {
                         </table>                    
                     </>
                 )}
-
                 <DropdownButton
                     header="add items"
                     dropdownOpen={isAddItemsOpen}
