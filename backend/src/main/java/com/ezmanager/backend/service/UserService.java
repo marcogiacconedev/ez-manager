@@ -19,9 +19,31 @@ public class UserService {
 
     public UserResponse getUserById(UUID id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-        
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
         return new UserResponse(user);
     }
-    
+
+    // --- usato da AuthService ---
+
+    public User findByUsername(String username) {
+        return userRepository.findByUserName(username)
+                .orElse(null);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUserName(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByUserEmail(email);
+    }
+
+    public User createUser(String username, String email, String passHash) {
+        User user = new User();
+        user.setUserName(username);
+        user.setUserEmail(email);
+        user.setPassHash(passHash);
+        return userRepository.save(user);
+    }
 }

@@ -1,0 +1,96 @@
+package com.ezmanager.backend.service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import com.ezmanager.backend.dto.CreateShoppingItemRequest;
+import com.ezmanager.backend.dto.ShoppingItemResponse;
+import com.ezmanager.backend.dto.ShoppingListItemResponse;
+import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
+import com.ezmanager.backend.model.ShoppingItem;
+import com.ezmanager.backend.repository.ShoppingItemRepository;
+import com.ezmanager.backend.repository.ShoppingListItemRepository;
+
+
+@Service
+public class ShoppingItemService {
+    private final ShoppingItemRepository shoppingItemRepository;
+    private final ShoppingListItemRepository shoppingListItemRepository;
+
+    public ShoppingItemService(
+        ShoppingItemRepository shoppingItemRepository,
+        ShoppingListItemRepository shoppingListItemRepository
+    ) {
+        this.shoppingItemRepository = shoppingItemRepository;
+        this.shoppingListItemRepository = shoppingListItemRepository;
+    }
+
+    public List<ShoppingItemResponse> getAllShoppingItemsByUserId(UUID userId) {
+        List<ShoppingItem> shoppingItems = shoppingItemRepository.findByUserId(userId);
+        
+        return shoppingItems.stream()
+        .map(item -> new ShoppingItemResponse(item))
+        .collect(Collectors.toList());
+    }
+
+    public Page<ShoppingItemResponse> getShoppingItemsByUserId(UUID userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").descending());
+        return shoppingItemRepository.findByUserId(userId, pageable).map(ShoppingItemResponse::new);
+    }
+
+    public ShoppingItemResponse getShoppingItemById(UUID itemId, UUID userId) {
+        ShoppingItem shoppingItem = shoppingItemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item non trovato"));
+        if (!shoppingItem.getUserId().equals(userId)) throw new RuntimeException("Non autorizzato");
+        return new ShoppingItemResponse(shoppingItem);        
+    }
+
+    public Page<ShoppingListItemResponse> getShoppingItemsByShoppingListId(int page, int size, UUID shoppingListId) {
+        Pageable pageable = PageRequest.of(page, size);      
+        return shoppingListItemRepository.findByShoppingListId(shoppingListId, pageable).map(shoppingListItem -> new ShoppingListItemResponse(shoppingListItem));
+    }
+    
+    public ShoppingItemResponse createShoppingItem(CreateShoppingItemRequest dto, UUID userId) {
+        ShoppingItem shoppingItem = new ShoppingItem();
+
+        shoppingItem.setUserId(userId);
+        shoppingItem.setCategory(dto.getCategory());
+        shoppingItem.setName(dto.getName());
+        shoppingItem.setPrice(dto.getPrice());
+        shoppingItem.setSize(dto.getSize());
+        shoppingItem.setMeasure(dto.getMeasure());
+
+        return new ShoppingItemResponse(shoppingItemRepository.save(shoppingItem));
+    }
+
+    public void deleteShoppingItem(UUID shoppingItemId, UUID userId) {
+        ShoppingItem shoppingItem = shoppingItemRepository.findById(shoppingItemId).orElseThrow(() -> new RuntimeException("Item non trovato"));
+        if (shoppingItem.getUserId().equals(userId)) {
+            new RuntimeException("Non autorizzato");
+        }
+
+        shoppingItemRepository.delete(shoppingItem);
+    }
+
+    public ShoppingItemResponse updateShoppingItem(UpdateShoppingItemRequest dto, UUID shoppingItemId, UUID userId) {
+        ShoppingItem shoppingItem = shoppingItemRepository.findById(shoppingItemId).orElseThrow(() -> new RuntimeException("Item non trovato!"));
+
+        if (!shoppingItem.getUserId().equals(userId)) {
+            new RuntimeException("Non autorizzato!");
+        }
+
+        shoppingItem.setCategory(dto.getCategory());
+        shoppingItem.setName(dto.getName());
+        shoppingItem.setPrice(dto.getPrice());
+        shoppingItem.setSize(dto.getSize());
+        shoppingItem.setMeasure(dto.getMeasure());
+
+        return new ShoppingItemResponse(shoppingItemRepository.save(shoppingItem));
+    }
+}

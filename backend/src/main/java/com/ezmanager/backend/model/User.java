@@ -11,26 +11,71 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="Users")
 public class User {
-    
+
     @Id
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
-    private String user_name;
+    @Column(
+        nullable = false,
+        unique = true,
+        name = "user_name"
+    )
+    private String userName;
 
-    @Column(nullable = false)
-    private String user_email;
+    @Column(
+        nullable = false,
+        unique = true,
+        name = "user_email"
+    )
+    private String userEmail;
 
-    @Column(nullable = false)
-    private String pass_hash;
+    @Column(
+        nullable = false,
+        name = "pass_hash"
+    )
+    private String passHash;
 
-    @Column(nullable = false)
-    private final String role = "USER";
+    @Column(
+        nullable = false,
+        name = "user_role"
+    )
+    private String userRole = "USER";
 
-    public UUID getId() { return this.id; }
-    public String getName() { return this. user_name; }
-    public String getEmail() { return this.user_email; }
-    public String getRole() { return this.role; }
+    //getters and setters
 
+    public UUID getId() {
+        return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getPassHash() {
+        return passHash;
+    }
+    public void setPassHash(String passHash) {
+        this.passHash = passHash;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
 }

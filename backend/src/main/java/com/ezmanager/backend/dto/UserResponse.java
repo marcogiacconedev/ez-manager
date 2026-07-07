@@ -11,11 +11,28 @@ public class UserResponse {
     private String userEmail;
     private String role;
 
-    public final UserResponse(User user) {
+    public UserResponse(User user) {
         this.id = user.getId();
-        this.userName = user.getName();
-        this.userEmail = user.getEmail();
-        this.role = user.getRole();
+        this.userName = user.getUserName();
+        this.userEmail = user.getUserEmail();
+        this.role = user.getUserRole();
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
     
 }
