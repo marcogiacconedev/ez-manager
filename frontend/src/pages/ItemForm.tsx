@@ -74,7 +74,7 @@ const ItemForm = () : React.ReactNode => {
             setError('An error occourred!');
             console.log(error);
         } finally {
-            navigate('/items');
+            // loading
         }
     }
 
@@ -101,12 +101,13 @@ const ItemForm = () : React.ReactNode => {
             setError('An error occourred!');
             console.log(error);
         } finally {
-            navigate('/items');
+            // loading
         }
     }
-
+    
     const submitForm = async (): Promise<void> => {
-        if (itemId) { updateItem() } else { createNewItem() }
+        if (itemId) { await updateItem() } else { await createNewItem() }
+        navigate('/items');
     }
 
     return (
