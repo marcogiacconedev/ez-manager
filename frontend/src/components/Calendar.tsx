@@ -1,6 +1,6 @@
-import { useState } from "react";
-
 // types
+
+import { useState } from "react";
 
 type CalendarProps = {
   onSelectDate?: (date: Date) => void;
@@ -12,20 +12,14 @@ type MonthState = {
   month: number; // 0–11
 };
 
-type SelectedDay = {
-  day: number;   // 1–31
-  month: number; // 0–11
-  year: number;
-} | null;
-
 // constants
 
 const MONTHS: string[] = [
-  "Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
-  "Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre",
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
 ];
 
-const DAYS: string[] = ["Lu","Ma","Me","Gi","Ve","Sa","Do"];
+const DAYS: string[] = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
 // Helper
 
@@ -40,18 +34,10 @@ function firstDayOfMonth(year: number, month: number): number {
 }
 
 export default function Calendar({ onSelectDate, selectedDate }: CalendarProps) {
-  let date: Date;
-  if (selectedDate) {
-    date = new Date(selectedDate);
-  } else {
-    date = new Date();
-  }
-  const [cur, setCur] = useState<MonthState>({
-    year: date.getFullYear(),
-    month: date.getMonth(),
+  const [cur, setCur] = useState<MonthState>(() => {
+    const d = selectedDate ?? new Date();
+    return { year: d.getFullYear(), month: d.getMonth() };
   });
-
-  const [selected, setSelected] = useState<SelectedDay>(null);
 
   const total     = daysInMonth(cur.year, cur.month);
   const start     = firstDayOfMonth(cur.year, cur.month);
@@ -76,37 +62,25 @@ export default function Calendar({ onSelectDate, selectedDate }: CalendarProps) 
 
   function selectDay(day: number): void {
     const date = new Date(cur.year, cur.month, day, 12, 0, 0);
-  console.log(date);
-  console.log(date.toISOString());
-    setSelected({ day, month: cur.month, year: cur.year });
     onSelectDate?.(date);
   }
 
   function isToday(day: number): boolean {
-    if (selectedDate) {
-      return (
-        day === date.getDate() &&
-        cur.month === date.getMonth() &&
-        cur.year === date.getFullYear()
-      );
-    } else {
-      return false;
-    }
-
+    const today = new Date();
+    return (
+      day === today.getDate() &&
+      cur.month === today.getMonth() &&
+      cur.year === today.getFullYear()
+    );
   }
 
   function isSelected(day: number): boolean {
-    if (selectedDate) {
-      return (
-        selected !== null &&
-        day === date.getDate() &&
-        cur.month === date.getMonth() &&
-        cur.year === date.getFullYear()
-      );
-    } else {
-      return false;
-    }
-
+    if (!selectedDate) return false;
+    return (
+      day === selectedDate.getDate() &&
+      cur.month === selectedDate.getMonth() &&
+      cur.year === selectedDate.getFullYear()
+    );
   }
 
   return (
@@ -144,12 +118,6 @@ export default function Calendar({ onSelectDate, selectedDate }: CalendarProps) 
           <div key={`next-${d}`} className="calendar__day calendar__day--other">{d}</div>
         ))}
       </div>
-
-      {selected !== null && (
-        <p className="calendar__selected">
-          Selezionato: {selected.day} {MONTHS[selected.month]} {selected.year}
-        </p>
-      )}
     </div>
   );
 }

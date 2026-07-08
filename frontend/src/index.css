@@ -259,14 +259,14 @@ input {
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  border-radius: 50%;
+  border-radius: 5px;
   cursor: pointer;
 }
  
-.calendar__day:hover     { background: #f0f0f0; }
-.calendar__day--other    { color: #bbb; cursor: default; }
-.calendar__day--today    { background: #e8f0fe; color: #1a73e8; font-weight: 600; }
-.calendar__day--selected { background: #1a73e8; color: #fff; font-weight: 600; }
+.calendar__day:hover     { border: 1px solid var(--accent) }
+.calendar__day--other    { color: var(--border); cursor: default; }
+.calendar__day--today    { border: 1px solid var(--accent); color: var(--text); font-weight: 600; }
+.calendar__day--selected { background: var(--accent); color: var(--border); font-weight: 600; }
 
 .prio-picker-container {
   display: flex;
