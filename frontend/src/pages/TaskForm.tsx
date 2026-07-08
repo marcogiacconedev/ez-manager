@@ -24,7 +24,8 @@ const TaskForm = (): React.ReactNode => {
     const [taskName, setTaskName] = useState<string>("");
     const [priority, setPriority] = useState<number>(1);
     const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState<boolean>(false);
-    const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
+    const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(true);
+    const [isNotesOpen, setIsNotesOpen] = useState<boolean>(false);
 
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
@@ -99,27 +100,36 @@ const TaskForm = (): React.ReactNode => {
                     value={taskName} 
                     onChange={e => {setTaskName(e.target.value)}}
                     disabled={completedAt ? true : false}/>
-                <textarea 
-                    name="description" 
-                    id="description" 
-                    placeholder="description" 
-                    className="form-textarea" 
-                    value={description} 
-                    onChange={e => {setDescription(e.target.value)}}
-                    disabled={completedAt ? true : false}    
-                ></textarea>
                 <DropdownButton
-                    header={'Calendar'}
+                    header={'Date'}
                     onOpen={() => setIsCalendarOpen(!isCalendarOpen)}
                     dropdownOpen={isCalendarOpen}
                     marginTop="1.5rem"
                     marginBottom="0"                    
                 ></DropdownButton>
-                {isCalendarOpen && (
+                { isCalendarOpen && (
                     <Calendar
                         selectedDate={date}
                         onSelectDate={onSelectDate}
                     />
+                )}
+                <DropdownButton
+                    header={'Notes'}
+                    onOpen={() => setIsNotesOpen(!isNotesOpen)}
+                    dropdownOpen={isNotesOpen}
+                    marginTop="1.5rem"
+                    marginBottom="0"
+                ></DropdownButton>
+                { isNotesOpen && (
+                    <textarea 
+                        name="description" 
+                        id="description" 
+                        placeholder="description" 
+                        className="form-textarea" 
+                        value={description} 
+                        onChange={e => {setDescription(e.target.value)}}
+                        disabled={completedAt ? true : false}    
+                    ></textarea>                
                 )}
                 <DropdownButton
                     header={'Priority'}

@@ -4,7 +4,9 @@ import { useState } from "react";
 
 type CalendarProps = {
   onSelectDate?: (date: Date) => void;
-  selectedDate: Date | null
+  selectedDate: Date | null;
+  onReset?: () => void;
+  isResetButtonVisible?: boolean;
 };
 
 type MonthState = {
@@ -33,7 +35,7 @@ function firstDayOfMonth(year: number, month: number): number {
   return d === 0 ? 6 : d - 1;
 }
 
-export default function Calendar({ onSelectDate, selectedDate }: CalendarProps) {
+export default function Calendar({ onSelectDate, selectedDate, onReset, isResetButtonVisible }: CalendarProps) {
   const [cur, setCur] = useState<MonthState>(() => {
     const d = selectedDate ?? new Date();
     return { year: d.getFullYear(), month: d.getMonth() };
@@ -118,6 +120,12 @@ export default function Calendar({ onSelectDate, selectedDate }: CalendarProps) 
           <div key={`next-${d}`} className="calendar__day calendar__day--other">{d}</div>
         ))}
       </div>
+
+      { isResetButtonVisible && (
+        <div className="add-button-container">
+          <button className="add-button" onClick={onReset}>Reset</button>
+        </div>
+      )}
     </div>
   );
 }
