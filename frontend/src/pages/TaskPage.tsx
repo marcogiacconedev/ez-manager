@@ -1,18 +1,44 @@
-import { useState } from "react";
-import useTaskApi from "../hooks/useTaskApi";
+import { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
 import { useNavigate } from "react-router-dom";
 import DropdownButton from "../components/DropdownButton";
 import AddButton from "../components/AddButton";
 import Header from "../components/Header";
+import EmptyListRow from "../components/EmptyListRow";
+import { useAuthStore } from "../store/useAuthStore";
+import type { Task } from "./HomePage";
 
 const TaskPage = (): React.ReactNode => {
+    const token = useAuthStore.getState().token;
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [page, setPage] = useState<number>(0);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const resultsPerPage = 4;
-    const { tasks, totalPages } = useTaskApi(page, resultsPerPage);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const navigate = useNavigate();
     const [calendarOpen, setCalendaropen] = useState<boolean>(false);
+
+    const getTasks = async (): Promise<void> => {
+        let url: string = `${import.meta.env.VITE_API_URL}/api/tasks?page=${page}&size=${resultsPerPage}`;
+        if (selectedDate) {
+            const formattedDate = selectedDate?.toISOString().split("T")[0];
+            url = `${url}&date=${formattedDate}`
+        }
+        fetch(url, {
+            headers : {
+                "Authorization" : `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setTotalPages(data.page.totalPages);
+            setTasks(data.content);
+        })        
+    } 
+
+    useEffect(() => {
+        getTasks();
+    }, [page, selectedDate])
 
     const changePage = (value: number) : void => {
         if (page + value < 0 || page + value >= totalPages) {
@@ -22,10 +48,7 @@ const TaskPage = (): React.ReactNode => {
     }
 
     const onSelectDate = (date: Date | null): void => {
-        if (date) {
-            setSelectedDate(date);
-        }
-        console.log(selectedDate);
+        setSelectedDate(date);
     }
 
     const toggleCalendarDropdown = (): void => {
@@ -37,9 +60,14 @@ const TaskPage = (): React.ReactNode => {
             <Header
                 header="Task"
                 username={null}
+                isNavigationButtonVisible={true}
             ></Header>
             <div className="card-container">
                 <div className="card">
+                    <EmptyListRow
+                        isRowVisible={tasks.length < 1}
+                        text={'No tasks found ♫ ♪'}
+                    ></EmptyListRow>                    
                     {
                         tasks.map((task) => (
                         <div key={task.id} className="task-display-row" onClick={() => navigate(`/tasks/create/${task.id}`)}>
@@ -58,24 +86,26 @@ const TaskPage = (): React.ReactNode => {
                     </div>
                     <div className="add-button-container">
                         <AddButton
-                        url={'/tasks/create'}
-                        text={'Create new'}
+                            url={'/tasks/create'}
+                            text={'Create new'}
                         ></AddButton>     
                     </div>
                 </div>           
                 <div className="card">
                     <DropdownButton
-                    header={'Date'}
-                    onOpen={toggleCalendarDropdown}
-                    dropdownOpen={calendarOpen}
+                        header={'Date'}
+                        onOpen={toggleCalendarDropdown}
+                        dropdownOpen={calendarOpen}
+                        marginTop="0"
+                        marginBottom="0"                    
                     ></DropdownButton>
-                    {calendarOpen && (
-                        <>
-                            <Calendar
-                            selectedDate={null}
-                            onSelectDate={onSelectDate}
-                            ></Calendar>
-                        </>
+                    {calendarOpen && (                    
+                        <Calendar
+                            selectedDate={selectedDate ? selectedDate : new Date()}
+                            onSelectDate={date => onSelectDate(date)}
+                            onReset={() => onSelectDate(null)}
+                            isResetButtonVisible={true}
+                        ></Calendar>                        
                     )}
                 </div>
             </div>

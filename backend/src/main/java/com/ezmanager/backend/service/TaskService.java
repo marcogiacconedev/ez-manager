@@ -1,5 +1,6 @@
 package com.ezmanager.backend.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Page<TaskResponse> getTasksByUserId(UUID userId, int page, int size, LocalDateTime date) {
+    public Page<TaskResponse> getTasksByUserId(UUID userId, int page, int size, LocalDate date) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         if (date == null) {
             return taskRepository.findByUserId(userId, pageable).map(TaskResponse::new);

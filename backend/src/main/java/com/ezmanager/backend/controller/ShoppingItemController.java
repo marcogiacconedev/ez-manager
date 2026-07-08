@@ -1,5 +1,6 @@
 package com.ezmanager.backend.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -18,38 +19,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ezmanager.backend.dto.CreateShoppingItemRequest;
 import com.ezmanager.backend.dto.ShoppingItemResponse;
+
 import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.service.ShoppingItemService;
+import com.ezmanager.backend.service.ShoppingListItemService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/shoppingitems")
 public class ShoppingItemController {
-    
     private final ShoppingItemService shoppingItemService;
 
-    public ShoppingItemController(ShoppingItemService shoppingItemService) {
+    public ShoppingItemController(
+        ShoppingItemService shoppingItemService,
+        ShoppingListItemService shoppingListItemService
+    ) {
         this.shoppingItemService = shoppingItemService;
     }
 
-    @GetMapping("/{shoppingListId}")
-    public ResponseEntity<Page<ShoppingItemResponse>> getShoppingItems(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @Valid @PathVariable UUID shoppingListId,
+    @GetMapping("/all")
+    public ResponseEntity<List<ShoppingItemResponse>> getAllShoppingItemsByUserId(
         @AuthenticationPrincipal String userId
     ) {
-        return ResponseEntity.ok(shoppingItemService.getShoppingItemsByShoppingListId(page, size, shoppingListId));
+        return ResponseEntity.ok(shoppingItemService.getAllShoppingItemsByUserId(UUID.fromString(userId)));
     }
 
-    @PostMapping("/{shoppingListId}")
-    public ResponseEntity<ShoppingItemResponse> createShoppingItem(
-        @Valid @RequestBody CreateShoppingItemRequest dto,
-        @PathVariable UUID shoppingListId,
+    @GetMapping
+    public ResponseEntity<Page<ShoppingItemResponse>> getShoppingItemsByUserId(
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "0") int page,
+            @AuthenticationPrincipal String userId
+        ) {
+            Page<ShoppingItemResponse> shoppingItems = shoppingItemService.getShoppingItemsByUserId(UUID.fromString(userId), page, size);
+            return ResponseEntity.ok(shoppingItems);        
+    }
+
+    @GetMapping("/{itemId}")
+    public ResponseEntity<ShoppingItemResponse> getShoppingItemById(
+        @PathVariable UUID itemId,
         @AuthenticationPrincipal String userId
     ) {
-        ShoppingItemResponse created = shoppingItemService.createShoppingItem(dto, shoppingListId);
+        ShoppingItemResponse shoppingItemResponse = shoppingItemService.getShoppingItemById(itemId, UUID.fromString(userId));
+        return ResponseEntity.ok(shoppingItemResponse);
+    }
+
+    @PostMapping
+    public ResponseEntity<ShoppingItemResponse> createShoppingItem(
+        @Valid @RequestBody CreateShoppingItemRequest dto,
+        @AuthenticationPrincipal String userId
+    ) {
+        ShoppingItemResponse created = shoppingItemService.createShoppingItem(dto, UUID.fromString(userId));
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

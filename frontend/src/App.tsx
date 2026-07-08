@@ -6,6 +6,9 @@ import TaskPage from './pages/TaskPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import HomePage from './pages/HomePage'
 import TaskForm from './pages/TaskForm'
+import ShoppingListForm from './pages/ShoppingListForm'
+import ItemPage from './pages/ItemPage'
+import ItemForm from './pages/ItemForm'
 
 function App() {
 
@@ -38,6 +41,31 @@ function App() {
             <ShoppingListPage />
           </ProtectedRoute>
         } />
+        <Route path="/shopping/create/" element={
+          <ProtectedRoute>
+            <ShoppingListForm />
+          </ProtectedRoute>
+        } />
+        <Route path="/shopping/create/:shoppingListIdFromUrl" element={
+          <ProtectedRoute>
+            <ShoppingListForm />
+          </ProtectedRoute>
+        } />
+        <Route path="/items" element={
+          <ProtectedRoute>
+            <ItemPage />
+          </ProtectedRoute>
+        } />      
+        <Route path="/items/create" element={
+          <ProtectedRoute>
+            <ItemForm />
+          </ProtectedRoute>
+        } />     
+        <Route path="/items/create/:itemIdFromUrl" element={
+          <ProtectedRoute>
+            <ItemForm />
+          </ProtectedRoute>
+        } />                 
         <Route path="*" element={<Navigate to="/home" replace />} />        
       </Routes>
     </BrowserRouter>

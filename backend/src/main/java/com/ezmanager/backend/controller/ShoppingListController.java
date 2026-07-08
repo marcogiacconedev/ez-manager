@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ezmanager.backend.dto.CreateShoppingListRequest;
 import com.ezmanager.backend.dto.ShoppingListResponse;
 import com.ezmanager.backend.dto.UpdateShoppingListRequest;
+import com.ezmanager.backend.service.ShoppingListItemService;
 import com.ezmanager.backend.service.ShoppingListService;
 
 import jakarta.validation.Valid;
@@ -26,10 +27,12 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/shoppinglists")
 public class ShoppingListController {
-
     private final ShoppingListService shoppingListService;
 
-    public ShoppingListController(ShoppingListService shoppingListService) {
+    public ShoppingListController(
+        ShoppingListService shoppingListService, 
+        ShoppingListItemService shoppingListItemService
+    ) {
         this.shoppingListService = shoppingListService;
     }
 
@@ -40,6 +43,15 @@ public class ShoppingListController {
         @AuthenticationPrincipal String userId
     ) {
         return ResponseEntity.ok(shoppingListService.getShoppingListsByUserId(UUID.fromString(userId), page, size));
+    }
+
+    @GetMapping("/{shoppingListId}")
+    public ResponseEntity<ShoppingListResponse> getShoppingListById(
+        @PathVariable UUID shoppingListId,
+        @AuthenticationPrincipal String userId
+    ) {
+        ShoppingListResponse shoppingListResponse = shoppingListService.getShoppingListById(shoppingListId, UUID.fromString(userId));
+        return ResponseEntity.ok(shoppingListResponse); 
     }
 
     @PostMapping

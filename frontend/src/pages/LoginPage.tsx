@@ -13,7 +13,6 @@ const LoginPage = (): React.ReactNode => {
 	const [error, setError] = useState<string>("");
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
-
 	const login = async (): Promise<void> => {
 		try {
 			const requestBody: LoginRequest = {
@@ -46,10 +45,16 @@ const LoginPage = (): React.ReactNode => {
 	return (
 		<>
 			<div>
-				<div className="header-container">
-					<h1 className="header">Login</h1>
+				<div className="logo-container" style={{
+					textAlign: 'center'
+				}}>
+					<img src="/logo.png" alt="Ez manager logo" />
 				</div>
+					
 				<div className="card-container">
+					<div className="header-container">
+						<h1 className="header">Login</h1>
+					</div>
 					<div className="card">
 						<input className="login-input" type="text" name="username" id="username" placeholder="username" onChange={e => {setUsername(e.target.value)}} />
 						<input className="login-input" type="password" name="password" id="password" placeholder="password" onChange={e => {setPassword(e.target.value)}} />

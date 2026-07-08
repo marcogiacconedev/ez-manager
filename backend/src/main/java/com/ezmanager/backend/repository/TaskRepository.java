@@ -1,6 +1,6 @@
 package com.ezmanager.backend.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,5 +11,5 @@ import com.ezmanager.backend.model.Task;
 
 public interface TaskRepository extends JpaRepository<Task, UUID>{
     Page<Task> findByUserId(UUID userId, Pageable pageable);
-    Page<Task> findByUserIdAndDate(UUID userId, LocalDateTime date, Pageable pageable);
+    Page<Task> findByUserIdAndDate(UUID userId, LocalDate date, Pageable pageable);
 }
