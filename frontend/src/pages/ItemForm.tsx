@@ -73,6 +73,8 @@ const ItemForm = () : React.ReactNode => {
         } catch (error) {
             setError('An error occourred!');
             console.log(error);
+        } finally {
+            navigate('/items');
         }
     }
 
@@ -98,12 +100,13 @@ const ItemForm = () : React.ReactNode => {
         } catch (error) {
             setError('An error occourred!');
             console.log(error);
+        } finally {
+            navigate('/items');
         }
     }
 
     const submitForm = async (): Promise<void> => {
         if (itemId) { updateItem() } else { createNewItem() }
-        navigate('/items');
     }
 
     return (
