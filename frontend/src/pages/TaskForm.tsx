@@ -61,7 +61,7 @@ const TaskForm = (): React.ReactNode => {
                 wholeDay: true,
                 priority: priority,
                 subtaskOf: null,
-                completedAt: completedAt
+                completedAt: completedAt ? completedAt : new Date()
             }
         const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
         const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;
@@ -162,8 +162,7 @@ const TaskForm = (): React.ReactNode => {
                     </button>
                     <button 
                         className="submit-form-button" 
-                        onClick={submitForm}
-                        disabled={completedAt ? true : false}    
+                        onClick={submitForm} 
                     >{taskId ? 'Apply Changes' : 'Submit'}</button>
                     { error && 
                         <div className="error-message-container">
