@@ -81,7 +81,7 @@ const ShoppingListPage = (): React.ReactNode => {
                         shoppingLists.map((shoppinglist) => (
                         <div key={shoppinglist.id} className="shoppinglist-display-row" onClick={() => navigate(`/shopping/create/${shoppinglist.id}`)}>
                             <p className="shoppinglist-display-item shoppinglist-name">▶ {shoppinglist.name}</p>
-                            <p className="shoppinglist-display-item shoppinglist-description">▻ {shoppinglist.notes}</p>
+                            {shoppinglist.notes !== '' && <p className="shoppinglist-display-item shoppinglist-description">▻ {shoppinglist.notes}</p>}                            
                             <div className="delete-item-button-container">
                                 {openDeleteModal === shoppinglist.id && (
                                     <button 

@@ -28,13 +28,13 @@ public class ShoppingItem {
     @Column(nullable = false, name = "category")
     private String category;
 
-    @Column(nullable = false, name = "price")
+    @Column(nullable = true, name = "price")
     private Float price;
 
-    @Column(nullable = false, name = "size")
+    @Column(nullable = true, name = "size")
     private Float size;
 
-    @Column(nullable = false, name = "measure")
+    @Column(nullable = true, name = "measure")
     private String measure;
 
     @OneToMany(mappedBy = "shoppingItem")
