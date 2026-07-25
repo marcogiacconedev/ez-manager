@@ -81,7 +81,7 @@ const HomePage = (): React.ReactNode => {
                         )}
                     </div>
                 </div>
-                <div className="card-container">
+                <div className="card-container" style={{marginBottom: '4rem'}}>
                     <div className="card">
                         <DropdownButton
                             header={'Alerts'}
