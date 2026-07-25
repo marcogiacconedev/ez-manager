@@ -137,7 +137,7 @@ const TaskForm = (): React.ReactNode => {
                     <textarea 
                         name="description" 
                         id="description" 
-                        placeholder="description" 
+                        placeholder="notes" 
                         className="form-textarea" 
                         value={description} 
                         onChange={e => {setDescription(e.target.value)}}

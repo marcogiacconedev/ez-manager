@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.ezmanager.backend.model.ShoppingItem;
 import com.ezmanager.backend.model.ShoppingListItem;
 
 @Repository
@@ -18,4 +19,5 @@ public interface ShoppingListItemRepository extends JpaRepository<ShoppingListIt
     List<ShoppingListItem> findByShoppingListId(UUID shoppingListId);
     Optional<ShoppingListItem> findByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
     Boolean existsByShoppingListIdAndShoppingItemId(UUID shoppingListId, UUID shoppingItemId);
+    List<ShoppingListItem> findByShoppingItem(ShoppingItem shoppingItem);
 }

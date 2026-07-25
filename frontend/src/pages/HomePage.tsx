@@ -56,7 +56,7 @@ const HomePage = (): React.ReactNode => {
                                 <div className={`task-completed-led ${task.completedAt ? 'completed' : ''}`}></div>
                                 <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                                 <p className="task-display-item task-name">▻ {task.name}</p>
-                                <p className="task-display-item task-description">▻ {task.description}</p>
+                                {task.description !== '' && <p className="task-display-item task-description">▻ {task.description}</p>}
                                 <hr className="task-line"/>
                             </div>
                         ))}

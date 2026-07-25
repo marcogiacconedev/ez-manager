@@ -238,7 +238,6 @@ const ShoppingListForm = (): React.ReactNode => {
             console.log(error);
         } finally {
             // caricamento
-            
         }
     };
 
