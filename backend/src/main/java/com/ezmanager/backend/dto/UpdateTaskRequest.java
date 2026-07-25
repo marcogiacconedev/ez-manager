@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UpdateTaskRequest {
+    @NotBlank(message = "Il nome della task è obbligatorio")
     private String name;
     private String description;
     private LocalDate date;

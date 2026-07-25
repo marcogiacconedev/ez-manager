@@ -2,7 +2,10 @@ package com.ezmanager.backend.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UpdateShoppingListRequest {
+    @NotBlank(message = "Il nome della lista è obbligatorio")
     private String name;
     private LocalDateTime completedAt;
     private LocalDateTime createdAt;

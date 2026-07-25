@@ -51,7 +51,14 @@ public class TaskService {
         task.setDate(dto.getDate());
         // wholeDay default false se omesso, perché il model lo richiede non-null
         task.setWholeDay(dto.getWholeDay() != null ? dto.getWholeDay() : false);
-        task.setPriority(dto.getPriority());
+        // validazione della priority
+        if (dto.getPriority() > 3) {
+            task.setPriority(3);
+        } else if (dto.getPriority() < 1) {
+            task.setPriority(1);
+        } else {
+            task.setPriority(dto.getPriority());
+        }
         task.setSubtaskOf(dto.getSubtaskOf());
         task.setCreatedAt(LocalDateTime.now());
         task.setCompletedAt(dto.getCompletedAt());
