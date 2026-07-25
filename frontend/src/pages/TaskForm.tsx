@@ -61,7 +61,7 @@ const TaskForm = (): React.ReactNode => {
                 wholeDay: true,
                 priority: priority,
                 subtaskOf: null,
-                completedAt: completedAt ? completedAt : new Date()
+                completedAt: completedAt
             }
         const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
         const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;

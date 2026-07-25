@@ -233,6 +233,22 @@ const ShoppingListForm = (): React.ReactNode => {
         }
     };
 
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+        const val = e.target.value;
+        // accetta solo numeri con al massimo 2 decimali
+        if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+            updateItem(index, 'price', val);
+        }
+    };
+
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+        const val = e.target.value;
+        // accetta solo numeri interi
+        if (val === '' || /^\d*$/.test(val)) {
+            updateItem(index, 'quantity', val);
+        }
+    };
+
     return (
         <>
             <Header
@@ -283,7 +299,7 @@ const ShoppingListForm = (): React.ReactNode => {
                                                         className="shopping-item-price-input"
                                                         type="text"
                                                         value={item.price}
-                                                        onChange={e => updateItem(index, 'price', e.target.value)}
+                                                        onChange={e => handlePriceChange(e, index)}
                                                     />
                                                 </td>
                                                 <td className="table-item">
@@ -291,7 +307,7 @@ const ShoppingListForm = (): React.ReactNode => {
                                                         className="shopping-item-quantity-input"
                                                         type="text"
                                                         value={item.quantity}
-                                                        onChange={e => updateItem(index, 'quantity', e.target.value)}
+                                                        onChange={e => handleQuantityChange(e, index)}
                                                     />
                                                 </td>
                                                 <td className="table-item">

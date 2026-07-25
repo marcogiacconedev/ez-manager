@@ -75,7 +75,12 @@ const ItemPage = (): React.ReactNode => {
                             <div key={item.id} className="task-display-row" onClick={() => navigate(`/items/create/${item.id}`)}>                                                            
                                 <p className="task-display-item task-date">▻ {item.name}</p>
                                 <p className="task-display-item task-description">▻ {item.category}</p>
-                                <p className="task-display-item task-description">▻ {item.size} {item.measure} - {item.price} €</p>
+                                {item.size || item.price && (
+                                    <p className="task-display-item task-description">
+                                        ▻ {item.size ? `${item.size} ${item.measure}` : ''} 
+                                        {item.size && item.price ? ' - ' : ''} 
+                                        {item.price ? `${item.price} €` : ''}</p>
+                                )}                                
                                 <div className="delete-item-button-container">
                                     {openDeleteModal === item.id && (
                                         <button 
