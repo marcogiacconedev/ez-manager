@@ -92,7 +92,10 @@ const HomePage = (): React.ReactNode => {
                         ></DropdownButton>
                     </div>
                 </div>
-                <button onClick={handleLogout}>logout</button>
+                <button 
+                    className="logout-button" 
+                    onClick={handleLogout}>                    
+                ⏏</button>
             </div>
         </>
     )

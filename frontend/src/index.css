@@ -399,3 +399,14 @@ table {
   padding: 0 0.6rem;
 }
 
+.logout-button {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  font-size: 2rem;
+  padding: 0 1rem;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--border);
+}
+
