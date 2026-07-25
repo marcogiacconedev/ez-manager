@@ -17,6 +17,7 @@ const TaskPage = (): React.ReactNode => {
     const [totalPages, setTotalPages] = useState<number>(0);
     const navigate = useNavigate();
     const [calendarOpen, setCalendaropen] = useState<boolean>(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState<string>('');
 
     const getTasks = async (): Promise<void> => {
         let url: string = `${import.meta.env.VITE_API_URL}/api/tasks?page=${page}&size=${resultsPerPage}`;
@@ -55,6 +56,17 @@ const TaskPage = (): React.ReactNode => {
         setCalendaropen(!calendarOpen);
     }
 
+    const deleteTask = (task: Task): void => {
+        console.log(task);
+        fetch(`${import.meta.env.VITE_API_URL}/api/tasks/${task.id}`, {
+            method: 'DELETE',
+            headers: {
+                "Authorization" : `Bearer ${token}`
+            }
+        })
+        .then(() => getTasks());
+    }
+
     return (
         <>
             <Header
@@ -74,7 +86,33 @@ const TaskPage = (): React.ReactNode => {
                             <div className={`task-completed-led ${task.completedAt ? 'completed' : ''}`}></div>
                             <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                             <p className="task-display-item task-name">▻ {task.name}</p>
-                            <p className="task-display-item task-description">▻ {task.description}</p>
+                            {task.description !== '' && <p className="task-display-item task-description">▻ {task.description}</p>}
+                            <div className="delete-item-button-container">
+                                {openDeleteModal === task.id && (
+                                    <button 
+                                        className="delete-item-button"
+                                        style={{
+                                            // border: '1px solid red',
+                                            marginRight: '1rem'
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deleteTask(task);
+                                        }}
+                                    >Delete?</button>
+                                )}                                
+                                <button 
+                                    className="delete-item-button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (openDeleteModal !== task.id) {
+                                            setOpenDeleteModal(task.id);
+                                        } else {
+                                            setOpenDeleteModal('');
+                                        }
+                                    }}
+                                >X</button>
+                            </div>
                             <hr className="task-line"/>
                         </div>
                         ))

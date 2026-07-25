@@ -22,6 +22,7 @@ const ItemPage = (): React.ReactNode => {
     const [totalPages, setTotalPages] = useState<number>(0);
     const size: number = 6;
     const navigate = useNavigate();
+    const [openDeleteModal, setOpenDeleteModal] = useState<string>('');
 
     const getItems = (): void => {
         fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems?page=${page}&size=${size}`, {
@@ -46,6 +47,17 @@ const ItemPage = (): React.ReactNode => {
         setPage(page + value);
     }
 
+    const deleteItem = (item: ShoppingItem): void => {
+        console.log(item);
+        fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems/${item.id}`, {
+            method: 'DELETE',
+            headers: {
+                "Authorization" : `Bearer ${token}`
+            }
+        })
+        .then(() => getItems());
+    }
+
     return (
         <>
             <Header
@@ -64,9 +76,35 @@ const ItemPage = (): React.ReactNode => {
                                 <p className="task-display-item task-date">▻ {item.name}</p>
                                 <p className="task-display-item task-description">▻ {item.category}</p>
                                 <p className="task-display-item task-description">▻ {item.size} {item.measure} - {item.price} €</p>
-                                <hr className="task-line"/>
-                            </div>
-                        ))}  
+                                <div className="delete-item-button-container">
+                                    {openDeleteModal === item.id && (
+                                        <button 
+                                            className="delete-item-button"
+                                            style={{
+                                                // border: '1px solid red',
+                                                marginRight: '1rem'
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteItem(item);
+                                            }}
+                                        >Delete?</button>
+                                    )}                                
+                                    <button 
+                                        className="delete-item-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (openDeleteModal !== item.id) {
+                                                setOpenDeleteModal(item.id);
+                                            } else {
+                                                setOpenDeleteModal('');
+                                            }
+                                        }}
+                                    >X</button>
+                                </div>                                
+                                    <hr className="task-line"/>
+                                </div>
+                            ))}  
                     <div className="paginator-container">
                         <button className="paginator-button" onClick={() => changePage(-1)}>Previous</button>
                         <p className="paginator-button">{page + 1}</p>

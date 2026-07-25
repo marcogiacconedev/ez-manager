@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddButton from "../components/AddButton";
 import Header from "../components/Header";
-import useShoppingListApi from "../hooks/useShoppingListApi";
+import  { type ShoppingList } from "../hooks/useShoppingListApi";
 import { useNavigate } from "react-router-dom";
 import EmptyListRow from "../components/EmptyListRow";
+import { useAuthStore } from "../store/useAuthStore";
 
 const ShoppingListPage = (): React.ReactNode => {
+    const token = useAuthStore.getState().token;
     const [page, setPage] = useState<number>(0);
     const navigate = useNavigate();
-    const resultsPerPage = 4
-    const { shoppingLists, totalPages } = useShoppingListApi({ page: page, size: resultsPerPage });
+    const resultsPerPage = 4;
+    const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([]);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [openDeleteModal, setOpenDeleteModal] = useState<string>('');    
+
+    const getLists = (): void => {
+        fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists?page=${page}&size=${resultsPerPage}`, {
+        headers: { "Authorization": `Bearer ${token}`}
+        })
+        .then(res => res.json())
+        .then(data => {setShoppingLists(data.content); setTotalPages(data.page.totalPages); console.log(data)})
+    }
+
+    useEffect(() => {
+        getLists();
+    }, [page])
     
     const changePage = (value: number) : void => {
         if (page + value < 0 || page + value >= totalPages) {
@@ -17,6 +33,36 @@ const ShoppingListPage = (): React.ReactNode => {
         }
         setPage(page + value);
     }
+
+    const deleteShoppingList = async (shoppingList: ShoppingList): Promise<void> => {
+        try {
+            const itemsRes = await fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglistitems/${shoppingList.id}/items`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!itemsRes.ok) {
+                throw new Error(`Errore cancellazione items: ${itemsRes.status}`);
+            }
+
+            const listRes = await fetch(`${import.meta.env.VITE_API_URL}/api/shoppinglists/${shoppingList.id}`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!listRes.ok) {
+                throw new Error(`Errore cancellazione lista: ${listRes.status}`);
+            }
+
+            getLists();
+        } catch (err) {
+            console.error("Errore durante l'eliminazione della lista della spesa:", err);
+        }
+    };
 
     return (
         <>
@@ -36,6 +82,32 @@ const ShoppingListPage = (): React.ReactNode => {
                         <div key={shoppinglist.id} className="shoppinglist-display-row" onClick={() => navigate(`/shopping/create/${shoppinglist.id}`)}>
                             <p className="shoppinglist-display-item shoppinglist-name">▶ {shoppinglist.name}</p>
                             <p className="shoppinglist-display-item shoppinglist-description">▻ {shoppinglist.notes}</p>
+                            <div className="delete-item-button-container">
+                                {openDeleteModal === shoppinglist.id && (
+                                    <button 
+                                        className="delete-item-button"
+                                        style={{
+                                            // border: '1px solid red',
+                                            marginRight: '1rem'
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deleteShoppingList(shoppinglist);
+                                        }}
+                                    >Delete?</button>
+                                )}                                
+                                <button 
+                                    className="delete-item-button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (openDeleteModal !== shoppinglist.id) {
+                                            setOpenDeleteModal(shoppinglist.id);
+                                        } else {
+                                            setOpenDeleteModal('');
+                                        }
+                                    }}
+                                >X</button>                                    
+                            </div>                        
                             <hr className="shoppinglist-line"/>
                         </div>
                         ))

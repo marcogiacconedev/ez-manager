@@ -386,3 +386,16 @@ table {
   font-size: 1.5rem;
   font-weight: 700;
 }
+
+.delete-item-button-container {
+  height: 20px;
+  display: flex;
+  justify-content: end;
+}
+
+.delete-item-button {
+  background-color: var(--border);
+  border: none;
+  padding: 0 0.6rem;
+}
+
