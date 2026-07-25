@@ -10,7 +10,7 @@ const ItemForm = () : React.ReactNode => {
     const [category, setCategory] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [price, setPrice] = useState<string>('');
-    const [size, setSize] = useState<number>();
+    const [size, setSize] = useState<string>('');
     const [measure, setMeasure] = useState<string>('');
     const [error, setError] = useState<string>('');
     const navigate = useNavigate();
@@ -22,15 +22,14 @@ const ItemForm = () : React.ReactNode => {
             }
         }).then(res => res.json())        
         .then(res => {
-            console.log(res)
-            setItemId(res.id);
-            setCategory(res.category);
-            setMeasure(res.measure);
-            setName(res.name);
-            setPrice(res.price);
-            setSize(res.size);
+            setItemId(res.id ?? '');
+            setCategory(res.category ?? '');
+            setMeasure(res.measure ?? '');
+            setName(res.name ?? '');
+            setPrice(res.price ?? '');
+            setSize(res.size ?? '');
         })
-    } 
+    }
 
     useEffect(() => {
         if (itemIdFromUrl) {
@@ -38,11 +37,19 @@ const ItemForm = () : React.ReactNode => {
         }
     }, [])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const val = e.target.value;
-        // accetta solo numeri con al massimo 2 decimali (adatta secondo necessità)
+        // accetta solo numeri con al massimo 2 decimali
         if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
             setPrice(val);
+        }
+    };
+
+    const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const val = e.target.value;
+        // accetta solo numeri con al massimo 2 decimali 
+        if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+            setSize(val);
         }
     };
 
@@ -126,10 +133,17 @@ const ItemForm = () : React.ReactNode => {
                     placeholder="price"
                     className="form-input"
                     value={price}
-                    onChange={handleChange}
+                    onChange={handlePriceChange}
                     onKeyDown={handleKeyDown}
                 />
-                <input type="number" placeholder="size" className="form-input" value={size} onChange={e => {setSize(parseInt(e.target.value))}}/>
+                <input 
+                    type="text" 
+                    placeholder="size" 
+                    className="form-input" 
+                    value={size} 
+                    onChange={handleSizeChange}
+                    onKeyDown={handleKeyDown}
+                />
                 <input type="text" placeholder="measure" className="form-input" value={measure} onChange={e => {setMeasure(e.target.value)}}/>
                 <div className="submit-form-container">
                     <button className="submit-form-button" onClick={submitForm}>{itemId ? 'Apply Changes' : 'Submit'}</button>
