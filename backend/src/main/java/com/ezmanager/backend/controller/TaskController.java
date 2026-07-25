@@ -1,6 +1,6 @@
 package com.ezmanager.backend.controller;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -38,11 +38,11 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<Page<TaskResponse>> getTasks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime date,
-            @AuthenticationPrincipal String userId) {
-
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        @AuthenticationPrincipal String userId
+        ) {
         return ResponseEntity.ok(taskService.getTasksByUserId(UUID.fromString(userId), page, size, date));
     }
 

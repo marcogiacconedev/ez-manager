@@ -15,6 +15,7 @@ import com.ezmanager.backend.dto.ShoppingItemResponse;
 import com.ezmanager.backend.dto.ShoppingListItemResponse;
 import com.ezmanager.backend.dto.UpdateShoppingItemRequest;
 import com.ezmanager.backend.model.ShoppingItem;
+import com.ezmanager.backend.model.ShoppingListItem;
 import com.ezmanager.backend.repository.ShoppingItemRepository;
 import com.ezmanager.backend.repository.ShoppingListItemRepository;
 
@@ -75,7 +76,10 @@ public class ShoppingItemService {
             new RuntimeException("Non autorizzato");
         }
 
+        List<ShoppingListItem> shoppingListItems = shoppingListItemRepository.findByShoppingItem(shoppingItem);
+                
         shoppingItemRepository.delete(shoppingItem);
+        shoppingListItemRepository.deleteAllInBatch(shoppingListItems);
     }
 
     public ShoppingItemResponse updateShoppingItem(UpdateShoppingItemRequest dto, UUID shoppingItemId, UUID userId) {

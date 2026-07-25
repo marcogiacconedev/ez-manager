@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import DropdownButton from "../components/DropdownButton";
 import EmptyListRow from "../components/EmptyListRow";
@@ -73,6 +73,7 @@ const ShoppingListForm = (): React.ReactNode => {
     const [isAddItemsOpen, setIsAddItemsOpen] = useState<boolean>(false);
     const [availableItems, setAvailableItems] = useState<Item[]>([]);
     const [filteredAvailableItems, setFilteredAvailableItems] = useState<Item[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // se siamo in modalita edit prende i metadati della lista
@@ -173,7 +174,7 @@ const ShoppingListForm = (): React.ReactNode => {
                 name: name,
                 completedAt: null,
                 createdAt: new Date(),
-                status: 'PENDING',
+                status: status,
                 notes: notes
             })
         });
@@ -186,16 +187,24 @@ const ShoppingListForm = (): React.ReactNode => {
         return data.id;    
     }
 
+    const isFormValid = (): boolean => {
+        if (!name) return false;
+        return true;
+    }
+
     const submitForm = async (): Promise<void> => {
         try {
-            console.log(shoppingListId);
+            if (!isFormValid()){
+                setError('Mandatory inputs: name');
+                throw new Error('Mandatory fields missing');
+            }
             let newShoppingListId: string = '';
             if (!shoppingListId) {
                 newShoppingListId = await createNewList();
             } else {
                 newShoppingListId = shoppingListId;
             }
-            // ora costruisci il body USANDO currentListId, non shoppingListId dello state
+            // costruisce il body USANDO currentListId
             const requestBody: UpdateShoppingListItemRequest[] = shoppingListItems.map(item => ({
                 added: item.added,
                 category: item.category,
@@ -224,10 +233,27 @@ const ShoppingListForm = (): React.ReactNode => {
 
             const data = await response.json();
             console.log(data);
+            navigate('/shopping');
         } catch (error) {
             console.log(error);
         } finally {
             // caricamento
+        }
+    };
+
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+        const val = e.target.value;
+        // accetta solo numeri con al massimo 2 decimali
+        if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+            updateItem(index, 'price', val);
+        }
+    };
+
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+        const val = e.target.value;
+        // accetta solo numeri interi
+        if (val === '' || /^\d*$/.test(val)) {
+            updateItem(index, 'quantity', val);
         }
     };
 
@@ -281,7 +307,7 @@ const ShoppingListForm = (): React.ReactNode => {
                                                         className="shopping-item-price-input"
                                                         type="text"
                                                         value={item.price}
-                                                        onChange={e => updateItem(index, 'price', e.target.value)}
+                                                        onChange={e => handlePriceChange(e, index)}
                                                     />
                                                 </td>
                                                 <td className="table-item">
@@ -289,7 +315,7 @@ const ShoppingListForm = (): React.ReactNode => {
                                                         className="shopping-item-quantity-input"
                                                         type="text"
                                                         value={item.quantity}
-                                                        onChange={e => updateItem(index, 'quantity', e.target.value)}
+                                                        onChange={e => handleQuantityChange(e, index)}
                                                     />
                                                 </td>
                                                 <td className="table-item">
@@ -311,7 +337,6 @@ const ShoppingListForm = (): React.ReactNode => {
                         </table>                    
                     </>
                 )}
-
                 <DropdownButton
                     header="add items"
                     dropdownOpen={isAddItemsOpen}

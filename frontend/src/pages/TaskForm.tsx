@@ -24,64 +24,78 @@ const TaskForm = (): React.ReactNode => {
     const [taskName, setTaskName] = useState<string>("");
     const [priority, setPriority] = useState<number>(1);
     const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState<boolean>(false);
-    const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
+    const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(true);
+    const [isNotesOpen, setIsNotesOpen] = useState<boolean>(false);
 
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
 
+    const onSelectDate = (date: Date | null): void => {
+        if (date) {
+            console.log(date);
+            setDate(date);
+        }
+    }
+
     useEffect(() => {
         if (taskId) {
             fetch(`${import.meta.env.VITE_API_URL}/api/tasks/${taskId}`, {
-            headers: { "Authorization": `Bearer ${token}`}
+                headers: { "Authorization": `Bearer ${token}` }
             })
             .then(res => res.json())
             .then(data => {
                 setCompletedAt(data.completedAt);
-                setDate(data.date);
+                setDate(data.date ? new Date(data.date) : new Date());
                 setDescription(data.description);
                 setTaskName(data.name);
                 setPriority(data.priority);
-                setCompletedAt(data.completedAt);
             })
-        }      
-    }, [])
-
-    const onSelectDate = (date: Date | null): void => {
-        if (date) {
-            setDate(date);
         }
-    }
+    }, [taskId, token])
         
     const submitForm = async (): Promise<void> => {
-        const requestBody: TaskRequest = {
-                name: taskName,
-                description: description,
-                date: date ? date : new Date(),
-                wholeDay: true,
-                priority: priority,
-                subtaskOf: null,
-                completedAt: completedAt
+        try {
+            if (!isFormValid()) {
+                setError('Mandatory inputs: name');
+                throw new Error('Insert mandatory fields')
+            };
+            const requestBody: TaskRequest = {
+                    name: taskName,
+                    description: description,
+                    date: date ? date : new Date(),
+                    wholeDay: true,
+                    priority: priority,
+                    subtaskOf: null,
+                    completedAt: completedAt
+                }
+            const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
+            const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;
+            const method: string = taskId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method ,
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+
+            if (data.id) {
+                navigate('/tasks');
+            } else {
+                setError("Operazione non riuscita");
             }
-        const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
-        const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;
-        const method: string = taskId ? 'PUT' : 'POST';
-
-        const response = await fetch(url, {
-            method: method ,
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        const data = await response.json();
-
-        if (data.id) {
-            navigate('/tasks');
-        } else {
-            setError("Operazione non riuscita");
+        } catch (error) {
+            console.log(error);
         }
+    }
+
+    const isFormValid = (): boolean => {
+        if (!taskName) return false;
+        return true;
     }
 
     return (
@@ -92,20 +106,43 @@ const TaskForm = (): React.ReactNode => {
                 isNavigationButtonVisible={true}
             ></Header>
             <div className="card">
-                <input type="text" placeholder="name" className="form-input" value={taskName} onChange={e => {setTaskName(e.target.value)}}/>
-                <textarea name="description" id="description" placeholder="description" className="form-textarea" value={description} onChange={e => {setDescription(e.target.value)}}></textarea>
+                <input 
+                    type="text" 
+                    placeholder="name" 
+                    className="form-input" 
+                    value={taskName} 
+                    onChange={e => {setTaskName(e.target.value)}}
+                    disabled={completedAt ? true : false}/>
                 <DropdownButton
-                    header={'Calendar'}
+                    header={'Date'}
                     onOpen={() => setIsCalendarOpen(!isCalendarOpen)}
                     dropdownOpen={isCalendarOpen}
                     marginTop="1.5rem"
                     marginBottom="0"                    
                 ></DropdownButton>
-                {isCalendarOpen && (
+                { isCalendarOpen && (
                     <Calendar
                         selectedDate={date}
                         onSelectDate={onSelectDate}
                     />
+                )}
+                <DropdownButton
+                    header={'Notes'}
+                    onOpen={() => setIsNotesOpen(!isNotesOpen)}
+                    dropdownOpen={isNotesOpen}
+                    marginTop="1.5rem"
+                    marginBottom="0"
+                ></DropdownButton>
+                { isNotesOpen && (
+                    <textarea 
+                        name="description" 
+                        id="description" 
+                        placeholder="notes" 
+                        className="form-textarea" 
+                        value={description} 
+                        onChange={e => {setDescription(e.target.value)}}
+                        disabled={completedAt ? true : false}    
+                    ></textarea>                
                 )}
                 <DropdownButton
                     header={'Priority'}
@@ -136,7 +173,10 @@ const TaskForm = (): React.ReactNode => {
                         onClick={() => setCompletedAt(new Date())}>
                         {completedAt ? 'Task completed ✓' : 'Mark as completed'}
                     </button>
-                    <button className="submit-form-button" onClick={submitForm}>{taskId ? 'Apply Changes' : 'Submit'}</button>
+                    <button 
+                        className="submit-form-button" 
+                        onClick={submitForm} 
+                    >{taskId ? 'Apply Changes' : 'Submit'}</button>
                     { error && 
                         <div className="error-message-container">
                             <p className="error-message">{error}</p>

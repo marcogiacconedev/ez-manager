@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 const ItemForm = () : React.ReactNode => {
@@ -10,9 +10,10 @@ const ItemForm = () : React.ReactNode => {
     const [category, setCategory] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [price, setPrice] = useState<string>('');
-    const [size, setSize] = useState<number>();
+    const [size, setSize] = useState<string>('');
     const [measure, setMeasure] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const navigate = useNavigate();
 
     const getFormData = (): void => {
         fetch(`${import.meta.env.VITE_API_URL}/api/shoppingitems/${itemIdFromUrl}`, {
@@ -21,15 +22,14 @@ const ItemForm = () : React.ReactNode => {
             }
         }).then(res => res.json())        
         .then(res => {
-            console.log(res)
-            setItemId(res.id);
-            setCategory(res.category);
-            setMeasure(res.measure);
-            setName(res.name);
-            setPrice(res.price);
-            setSize(res.size);
+            setItemId(res.id ?? '');
+            setCategory(res.category ?? '');
+            setMeasure(res.measure ?? '');
+            setName(res.name ?? '');
+            setPrice(res.price ?? '');
+            setSize(res.size ?? '');
         })
-    } 
+    }
 
     useEffect(() => {
         if (itemIdFromUrl) {
@@ -37,11 +37,19 @@ const ItemForm = () : React.ReactNode => {
         }
     }, [])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const val = e.target.value;
-        // accetta solo numeri con al massimo 2 decimali (adatta secondo necessità)
+        // accetta solo numeri con al massimo 2 decimali
         if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
             setPrice(val);
+        }
+    };
+
+    const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const val = e.target.value;
+        // accetta solo numeri con al massimo 2 decimali 
+        if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+            setSize(val);
         }
     };
 
@@ -72,6 +80,8 @@ const ItemForm = () : React.ReactNode => {
         } catch (error) {
             setError('An error occourred!');
             console.log(error);
+        } finally {
+            // loading
         }
     }
 
@@ -97,11 +107,28 @@ const ItemForm = () : React.ReactNode => {
         } catch (error) {
             setError('An error occourred!');
             console.log(error);
+        } finally {
+            // loading
         }
     }
 
+
+    const isFormValid = (): boolean => {
+        if (!name || !category) return false;
+        return true;
+    }
+    
     const submitForm = async (): Promise<void> => {
-        if (itemId) { updateItem() } else { createNewItem() }
+        try {
+            if (!isFormValid()) {
+                setError('Mandatory inputs: name, category');
+                throw new Error('Mandatory fields missing');
+            };
+            if (itemId) { await updateItem() } else { await createNewItem() }
+            navigate('/items');
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -120,10 +147,17 @@ const ItemForm = () : React.ReactNode => {
                     placeholder="price"
                     className="form-input"
                     value={price}
-                    onChange={handleChange}
+                    onChange={handlePriceChange}
                     onKeyDown={handleKeyDown}
                 />
-                <input type="number" placeholder="size" className="form-input" value={size} onChange={e => {setSize(parseInt(e.target.value))}}/>
+                <input 
+                    type="text" 
+                    placeholder="size" 
+                    className="form-input" 
+                    value={size} 
+                    onChange={handleSizeChange}
+                    onKeyDown={handleKeyDown}
+                />
                 <input type="text" placeholder="measure" className="form-input" value={measure} onChange={e => {setMeasure(e.target.value)}}/>
                 <div className="submit-form-container">
                     <button className="submit-form-button" onClick={submitForm}>{itemId ? 'Apply Changes' : 'Submit'}</button>

@@ -1,10 +1,13 @@
 package com.ezmanager.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UpdateShoppingItemRequest {
-    private String category;
+    @NotBlank(message = "Il nome dell item è obbligatorio")
     private String name;
+    private String category;
     private Float price;
-    private float size;
+    private Float size;
     private String measure;
 
     public String getCategory() { return category; }
@@ -13,7 +16,7 @@ public class UpdateShoppingItemRequest {
     public void setPrice(Float price) { this.price = price; }    
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public float getSize() { return size; }
+    public Float getSize() { return size; }
     public void setSize(Float size) { this.size = size; }
     public String getMeasure() { return measure; }
     public void setMeasure(String measure) { this.measure = measure; }

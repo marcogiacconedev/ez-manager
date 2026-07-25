@@ -56,7 +56,7 @@ const HomePage = (): React.ReactNode => {
                                 <div className={`task-completed-led ${task.completedAt ? 'completed' : ''}`}></div>
                                 <p className="task-display-item task-date">▶ {new Date(task.date).toDateString()}</p>
                                 <p className="task-display-item task-name">▻ {task.name}</p>
-                                <p className="task-display-item task-description">▻ {task.description}</p>
+                                {task.description !== '' && <p className="task-display-item task-description">▻ {task.description}</p>}
                                 <hr className="task-line"/>
                             </div>
                         ))}
@@ -81,7 +81,7 @@ const HomePage = (): React.ReactNode => {
                         )}
                     </div>
                 </div>
-                <div className="card-container">
+                <div className="card-container" style={{marginBottom: '4rem'}}>
                     <div className="card">
                         <DropdownButton
                             header={'Alerts'}
@@ -92,7 +92,10 @@ const HomePage = (): React.ReactNode => {
                         ></DropdownButton>
                     </div>
                 </div>
-                <button onClick={handleLogout}>logout</button>
+                <button 
+                    className="logout-button" 
+                    onClick={handleLogout}>                    
+                ⏏</button>
             </div>
         </>
     )

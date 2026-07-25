@@ -1,5 +1,6 @@
 package com.ezmanager.backend.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Page<TaskResponse> getTasksByUserId(UUID userId, int page, int size, LocalDateTime date) {
+    public Page<TaskResponse> getTasksByUserId(UUID userId, int page, int size, LocalDate date) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         if (date == null) {
             return taskRepository.findByUserId(userId, pageable).map(TaskResponse::new);
@@ -50,7 +51,14 @@ public class TaskService {
         task.setDate(dto.getDate());
         // wholeDay default false se omesso, perché il model lo richiede non-null
         task.setWholeDay(dto.getWholeDay() != null ? dto.getWholeDay() : false);
-        task.setPriority(dto.getPriority());
+        // validazione della priority
+        if (dto.getPriority() > 3) {
+            task.setPriority(3);
+        } else if (dto.getPriority() < 1) {
+            task.setPriority(1);
+        } else {
+            task.setPriority(dto.getPriority());
+        }
         task.setSubtaskOf(dto.getSubtaskOf());
         task.setCreatedAt(LocalDateTime.now());
         task.setCompletedAt(dto.getCompletedAt());
