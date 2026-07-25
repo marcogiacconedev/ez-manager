@@ -111,10 +111,24 @@ const ItemForm = () : React.ReactNode => {
             // loading
         }
     }
+
+
+    const isFormValid = (): boolean => {
+        if (!name || !category) return false;
+        return true;
+    }
     
     const submitForm = async (): Promise<void> => {
-        if (itemId) { await updateItem() } else { await createNewItem() }
-        navigate('/items');
+        try {
+            if (!isFormValid()) {
+                setError('Mandatory inputs: name, category');
+                throw new Error('Mandatory fields missing');
+            };
+            if (itemId) { await updateItem() } else { await createNewItem() }
+            navigate('/items');
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (

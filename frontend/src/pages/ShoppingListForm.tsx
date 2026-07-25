@@ -187,8 +187,17 @@ const ShoppingListForm = (): React.ReactNode => {
         return data.id;    
     }
 
+    const isFormValid = (): boolean => {
+        if (!name) return false;
+        return true;
+    }
+
     const submitForm = async (): Promise<void> => {
         try {
+            if (!isFormValid()){
+                setError('Mandatory inputs: name');
+                throw new Error('Mandatory fields missing');
+            }
             let newShoppingListId: string = '';
             if (!shoppingListId) {
                 newShoppingListId = await createNewList();
@@ -224,12 +233,12 @@ const ShoppingListForm = (): React.ReactNode => {
 
             const data = await response.json();
             console.log(data);
+            navigate('/shopping');
         } catch (error) {
             console.log(error);
-            setError('An error occurred');
         } finally {
             // caricamento
-            navigate('/shopping');
+            
         }
     };
 

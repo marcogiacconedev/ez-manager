@@ -54,35 +54,48 @@ const TaskForm = (): React.ReactNode => {
     }, [taskId, token])
         
     const submitForm = async (): Promise<void> => {
-        const requestBody: TaskRequest = {
-                name: taskName,
-                description: description,
-                date: date ? date : new Date(),
-                wholeDay: true,
-                priority: priority,
-                subtaskOf: null,
-                completedAt: completedAt
+        try {
+            if (!isFormValid()) {
+                setError('Mandatory inputs: name');
+                throw new Error('Insert mandatory fields')
+            };
+            const requestBody: TaskRequest = {
+                    name: taskName,
+                    description: description,
+                    date: date ? date : new Date(),
+                    wholeDay: true,
+                    priority: priority,
+                    subtaskOf: null,
+                    completedAt: completedAt
+                }
+            const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
+            const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;
+            const method: string = taskId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method ,
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+
+            if (data.id) {
+                navigate('/tasks');
+            } else {
+                setError("Operazione non riuscita");
             }
-        const requestUrl = `${import.meta.env.VITE_API_URL}/api/tasks`;
-        const url = taskId ? `${requestUrl}/${taskId}` : requestUrl;
-        const method: string = taskId ? 'PUT' : 'POST';
-
-        const response = await fetch(url, {
-            method: method ,
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        const data = await response.json();
-
-        if (data.id) {
-            navigate('/tasks');
-        } else {
-            setError("Operazione non riuscita");
+        } catch (error) {
+            console.log(error);
         }
+    }
+
+    const isFormValid = (): boolean => {
+        if (!taskName) return false;
+        return true;
     }
 
     return (
